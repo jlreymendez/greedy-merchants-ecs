@@ -1,4 +1,5 @@
-﻿using GreedyMerchants.ECS.Ship;
+﻿using GreedyMerchants.ECS.Player;
+using GreedyMerchants.ECS.Ship;
 using GreedyMerchants.ECS.Unity;
 using Svelto.Context;
 using Svelto.ECS;
@@ -33,12 +34,18 @@ namespace GreedyMerchants
             _gameObjectFactory = new GameObjectFactory();
 
             AddShipEngines(context);
+            AddPlayerEngines(context);
         }
 
         void AddShipEngines(GameContext context)
         {
             _enginesRoot.AddEngine(new ShipSpawningEngine(_entityFactory, _gameObjectFactory, context.ShipSpawns, context.Ship));
             _enginesRoot.AddEngine(new ShipMovementEngine(_time));
+        }
+
+        void AddPlayerEngines(GameContext context)
+        {
+            _enginesRoot.AddEngine(new PlayerInputEngine(new PlayerInput()));
         }
 
         public void OnContextDestroyed()

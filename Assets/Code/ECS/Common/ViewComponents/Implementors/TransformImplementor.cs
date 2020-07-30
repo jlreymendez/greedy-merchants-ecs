@@ -19,6 +19,24 @@ namespace GreedyMerchants.ECS.Common
             set => transform.rotation = value;
         }
 
+        public float3 Forward
+        {
+            get => transform.forward;
+            set => transform.forward = value;
+        }
+
+        public float3 Right
+        {
+            get => transform.right;
+            set => transform.right = value;
+        }
+
+        public float3 Up
+        {
+            get => transform.up;
+            set => transform.up = value;
+        }
+
         public float3 Scale
         {
             get => transform.localScale;

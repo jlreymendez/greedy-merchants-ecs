@@ -10,6 +10,9 @@ namespace GreedyMerchants.ECS.Common
     public interface IRotationComponent
     {
         quaternion Rotation { get; set; }
+        float3 Forward { get; set; }
+        float3 Right { get; set; }
+        float3 Up { get; set; }
     }
 
     public interface IScaleComponent

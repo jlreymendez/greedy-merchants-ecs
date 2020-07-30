@@ -7,6 +7,7 @@ using GreedyMerchants.ECS.Unity;
 using GreedyMerchants.ECS.Unity.Extensions;
 using Svelto.ECS;
 using Svelto.Tasks;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace GreedyMerchants.ECS.Ship
@@ -59,7 +60,10 @@ namespace GreedyMerchants.ECS.Ship
                     _gameObjectFactory.BuildForEntity(_shipDefinition.Prefab.GetAsset<GameObject>(), spawn.position, spawn.rotation);
 
                 var shipInitializer = _entityFactory.BuildEntity<PlayerEntityDescriptor>(id++, GameGroups.PlayerShip, implementors);
-                shipInitializer.Init(new ShipComponent { Speed = _shipDefinition.Speed });
+                shipInitializer.Init(new ShipComponent {
+                    Speed = _shipDefinition.Speed,
+                    Direction = math.mul(spawn.rotation, new float3(1, 0, 0))
+                });
 
                 var spriteRenderer = ship.GetComponent<SpriteRendererImplementor>();
                 spriteRenderer.Sprites = new Sprite[]

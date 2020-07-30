@@ -42,8 +42,8 @@ namespace GreedyMerchants.ECS.Ship
                 ref var ship = ref components.entityComponentA;
                 ref var shipViews = ref components.entityComponentB;
 
-                var right = math.mul(shipViews.Transform.Rotation, new float3(1, 0, 0));
-                shipViews.Transform.Position += ship.Speed * right * + _time.DeltaTime;
+                shipViews.Transform.Position += ship.Speed * ship.Direction * + _time.DeltaTime;
+                shipViews.Transform.Right = ship.Direction;
             }
         }
     }
