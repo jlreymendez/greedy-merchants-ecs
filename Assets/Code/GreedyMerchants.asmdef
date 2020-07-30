@@ -1,9 +1,9 @@
 {
     "name": "GreedyMerchants",
     "references": [
-        "GUID:1869b46461d119144a089fe5899ab312",
-        "GUID:7f15980cea481bf4fa7d92ddbc72e2ef",
-        "GUID:080a986543288e14b98f1d7b67e3e00a"
+        "GUID:21091ce4f8660224eae765bfdf306c66",
+        "GUID:3f31199665bf49c4ba0105dd50d63a1b",
+        "GUID:3dd6b083af9acc7419ee83b04cc95678"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
