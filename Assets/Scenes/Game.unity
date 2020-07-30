@@ -171,6 +171,11 @@ PrefabInstance:
       propertyPath: m_ChunkCullingBounds.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8597267082590035057, guid: b212601245399c54e92641f419cd7697,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8597267082625186600, guid: b212601245399c54e92641f419cd7697,
         type: 3}
       propertyPath: m_Name
@@ -405,6 +410,9 @@ MonoBehaviour:
   - {fileID: 1846479688}
   - {fileID: 1680548815}
   - {fileID: 797258997}
+  Grid: {fileID: 1383516658}
+  LandTilemap: {fileID: 1028290381}
+  GridDefinition: {fileID: 11400000, guid: 678ae05b92b4a5c40ac5b936181c047e, type: 2}
 --- !u!1 &797258996
 GameObject:
   m_ObjectHideFlags: 0
@@ -435,6 +443,18 @@ Transform:
   m_Father: {fileID: 1924922405}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1839735485 &1028290381 stripped
+Tilemap:
+  m_CorrespondingSourceObject: {fileID: 8597267082590035056, guid: b212601245399c54e92641f419cd7697,
+    type: 3}
+  m_PrefabInstance: {fileID: 249239583}
+  m_PrefabAsset: {fileID: 0}
+--- !u!156049354 &1383516658 stripped
+Grid:
+  m_CorrespondingSourceObject: {fileID: 8597267082625186603, guid: b212601245399c54e92641f419cd7697,
+    type: 3}
+  m_PrefabInstance: {fileID: 249239583}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1680548814
 GameObject:
   m_ObjectHideFlags: 0

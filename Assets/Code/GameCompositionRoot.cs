@@ -1,4 +1,6 @@
-﻿using GreedyMerchants.ECS.Player;
+﻿using GreedyMerchants.ECS.Grid;
+using GreedyMerchants.ECS.Grid.Engines;
+using GreedyMerchants.ECS.Player;
 using GreedyMerchants.ECS.Ship;
 using GreedyMerchants.ECS.Unity;
 using Svelto.Context;
@@ -17,6 +19,7 @@ namespace GreedyMerchants
         IEntityFunctions _entityFunctions;
         Time _time;
         GameObjectFactory _gameObjectFactory;
+        GridUtils _gridUtils;
 
         public void OnContextInitialized<T>(T contextHolder)
         {
@@ -32,9 +35,16 @@ namespace GreedyMerchants
 
             _time = new Time();
             _gameObjectFactory = new GameObjectFactory();
+            _gridUtils = new GridUtils(context.Grid, context.LandTilemap, context.GridDefinition);
 
+            AddGridEngines(context);
             AddShipEngines(context);
             AddPlayerEngines(context);
+        }
+
+        void AddGridEngines(GameContext context)
+        {
+            _enginesRoot.AddEngine(new GridSpawningEngine(_entityFactory, _gridUtils));
         }
 
         void AddShipEngines(GameContext context)
