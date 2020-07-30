@@ -21,9 +21,9 @@ MonoBehaviour:
   ShipSprites:
   - m_AssetGUID: 14dd36f24e951734689947d47a2ca9c6
     m_SubObjectName: 
-  - m_AssetGUID: 2cbd83b6bef9b864f9deb1248e837c75
-    m_SubObjectName: 
   - m_AssetGUID: 62d384bdb439de34bb0665a228bb37aa
+    m_SubObjectName: 
+  - m_AssetGUID: 2cbd83b6bef9b864f9deb1248e837c75
     m_SubObjectName: 
   - m_AssetGUID: e562d7e4f971d6b4480c37599ff3fef3
     m_SubObjectName: 
