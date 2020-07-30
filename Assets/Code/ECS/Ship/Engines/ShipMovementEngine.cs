@@ -33,17 +33,14 @@ namespace GreedyMerchants.ECS.Ship
 
         void Process()
         {
-            var entities = entitiesDB.QueryEntities<ShipComponent, ShipViewComponent>(GameGroups.Ships).entities;
-            var enumerator = entities.GetEnumerator();
-
-            while (enumerator.MoveNext())
+            var query = entitiesDB.QueryEntities<ShipComponent, ShipViewComponent>(GameGroups.Ships);
+            foreach (var (ships, shipViews, count) in query.groups)
             {
-                var components = enumerator.Current;
-                ref var ship = ref components.entityComponentA;
-                ref var shipViews = ref components.entityComponentB;
-
-                shipViews.Transform.Position += ship.Speed * ship.Direction * + _time.DeltaTime;
-                shipViews.Transform.Right = ship.Direction;
+                for (var i = 0; i < count; i++)
+                {
+                    shipViews[i].Transform.Position += ships[i].Speed * ships[i].Direction * +_time.DeltaTime;
+                    shipViews[i].Transform.Right = ships[i].Direction;
+                }
             }
         }
     }
