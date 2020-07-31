@@ -24,8 +24,6 @@ namespace GreedyMerchants.ECS.Grid.Engines
 
         void CreateGridEntities()
         {
-            var landGroup = GridGroups.GridLandGroup.BuildGroup;
-            var waterGroup = GridGroups.GridWaterNoCoinGroup.BuildGroup;
             var gridSize = _gridUtils.GetSize();
             for (uint x = 0; x < gridSize.x; x++)
             {
@@ -34,7 +32,7 @@ namespace GreedyMerchants.ECS.Grid.Engines
                     var cellPosition = new uint2(x, y);
                     var isLand = _gridUtils.IsLand(cellPosition);
                     var initializer = _entityFactory.BuildEntity<GridCellEntityDescriptor>(
-                        _gridUtils.CellToEntityId(cellPosition), isLand ? landGroup : waterGroup
+                        _gridUtils.CellToEntityId(cellPosition), isLand ? GridGroups.GridLandGroup : GridGroups.GridWaterNoCoinGroup
                     );
 
                     initializer.Init(new GridCellComponent {

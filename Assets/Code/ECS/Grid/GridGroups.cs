@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Svelto.DataStructures;
 using Svelto.ECS;
 
 namespace GreedyMerchants.ECS.Grid
@@ -12,9 +13,17 @@ namespace GreedyMerchants.ECS.Grid
         public class HAS_COIN : GroupTag<HAS_COIN> {}
         public class NO_COIN : GroupTag<NO_COIN> {}
 
-        public class GridLandGroup : GroupCompound<GRID_CELL, LAND> {}
-        public class GridWaterHasCoinGroup : GroupCompound<GRID_CELL, WATER, NO_COIN> {}
-        public class GridWaterNoCoinGroup : GroupCompound<GRID_CELL, WATER, HAS_COIN> {}
+        public class GridLandGroupCompound : GroupCompound<GRID_CELL, LAND> {}
+        public class GridWaterHasCoinGroupCompound : GroupCompound<GRID_CELL, WATER, NO_COIN> {}
+        public class GridWaterNoCoinGroupCompound : GroupCompound<GRID_CELL, WATER, HAS_COIN> {}
+
+        public static readonly ExclusiveGroupStruct GridLandGroup = GridLandGroupCompound.BuildGroup;
+        public static readonly ExclusiveGroupStruct GridWaterHasCoinGroup = GridWaterHasCoinGroupCompound.BuildGroup;
+        public static readonly ExclusiveGroupStruct GridWaterNoCoinGroup = GridWaterNoCoinGroupCompound.BuildGroup;
+
+        public static readonly FasterReadOnlyList<ExclusiveGroupStruct> GridWaterGroup = new FasterList<ExclusiveGroupStruct>(
+            new ExclusiveGroupStruct[] { GridWaterHasCoinGroup, GridWaterNoCoinGroup }
+        );
     }
 }
 
