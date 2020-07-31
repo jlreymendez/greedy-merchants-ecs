@@ -1,8 +1,5 @@
-﻿using System.Collections;
-using Svelto.ECS.Hybrid;
+﻿using Svelto.ECS.Hybrid;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace GreedyMerchants.ECS.Common
 {

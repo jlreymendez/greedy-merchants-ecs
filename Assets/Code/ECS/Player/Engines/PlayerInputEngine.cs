@@ -33,7 +33,8 @@ namespace GreedyMerchants.ECS.Player
                     {
                         ships[i].Direction = new float3(direction.x, 0, 0);
                     }
-                    else if (direction.y != 0)
+
+                    if (direction.y != 0)
                     {
                         ships[i].Direction = new float3(0, direction.y, 0);
                     }

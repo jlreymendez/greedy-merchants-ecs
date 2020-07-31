@@ -50,7 +50,7 @@ namespace GreedyMerchants
         void AddShipEngines(GameContext context)
         {
             _enginesRoot.AddEngine(new ShipSpawningEngine(_entityFactory, _gameObjectFactory, context.ShipSpawns, context.Ship));
-            _enginesRoot.AddEngine(new ShipMovementEngine(_time));
+            _enginesRoot.AddEngine(new ShipMovementEngine(_time, _gridUtils));
         }
 
         void AddPlayerEngines(GameContext context)

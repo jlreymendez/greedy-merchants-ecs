@@ -62,7 +62,7 @@ namespace GreedyMerchants.ECS.Ship
                 var shipInitializer = _entityFactory.BuildEntity<PlayerEntityDescriptor>(id++, GameGroups.PlayerShip, implementors);
                 shipInitializer.Init(new ShipComponent {
                     Speed = _shipDefinition.Speed,
-                    Direction = math.mul(spawn.rotation, new float3(1, 0, 0))
+                    Direction = math.round(spawn.transform.right)
                 });
 
                 var spriteRenderer = ship.GetComponent<SpriteRendererImplementor>();
