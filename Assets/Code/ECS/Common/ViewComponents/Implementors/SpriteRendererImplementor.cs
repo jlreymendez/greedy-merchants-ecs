@@ -1,4 +1,6 @@
-﻿using Svelto.ECS.Hybrid;
+﻿using Svelto.Common.Internal;
+using Svelto.ECS.Hybrid;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace GreedyMerchants.ECS.Common
@@ -7,14 +9,32 @@ namespace GreedyMerchants.ECS.Common
     {
         public Sprite[] Sprites;
         SpriteRenderer _spriteRenderer;
+        int _spriteIndex;
 
-        public int Sprite { set => _spriteRenderer.sprite = Sprites[value]; }
+        public int Sprite
+        {
+            get => _spriteIndex;
+            set
+            {
+                _spriteIndex = value;
+                _spriteRenderer.sprite = Sprites[value];
+            }
+        }
 
         public bool Render { set => _spriteRenderer.enabled = value; }
 
         public int Layer { set => _spriteRenderer.sortingLayerID = value; }
 
         public int Order { set => _spriteRenderer.sortingOrder = value; }
+
+        public bool2 Flip
+        {
+            set
+            {
+                _spriteRenderer.flipX = value.x;
+                _spriteRenderer.flipY = value.y;
+            }
+        }
 
         void Awake()
         {
