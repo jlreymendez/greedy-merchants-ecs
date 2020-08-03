@@ -96,19 +96,21 @@ namespace GreedyMerchants.ECS.Coin
                 if (coinsCount == 0) continue;
 
                 // Advance spawn timer.
+                var coinToSpawn = -1;
                 for (var i = 0; i < coinsCount; i++)
                 {
                     coins[i].TimeToRespawn -= _time.DeltaTime;
+                    coinToSpawn = coinToSpawn < 0 && coins[i].TimeToRespawn <= 0 ? i : coinToSpawn;
                 }
 
                 // Spawn first coin if ready.
-                if (coins[0].TimeToRespawn <= 0)
+                if (coinToSpawn > -1)
                 {
                     var cell = cells[_random.NextInt(0, cellCount)];
                     _functions.SwapEntityGroup<GridCellEntityDescriptor>(cell.ID, GridGroups.GridWaterHasCoinGroup);
 
                     // Recycle coin.
-                    var coinView = coinViews[0];
+                    var coinView = coinViews[coinToSpawn];
                     _functions.SwapEntityGroup<CoinEntityDescriptor>(coinView.ID, CoinGroups.SpawnedCoinsGroup);
 
                     coinView.Transform.Position = new float3(cell.WorldCenter, 0);

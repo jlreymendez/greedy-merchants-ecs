@@ -52,6 +52,12 @@ namespace GreedyMerchants.ECS.Grid
             return new uint2((uint)worldPosition.x, (uint)worldPosition.y);
         }
 
+        public uint WorldToEnitityId(float2 worldPosition)
+        {
+            var cellPosition = WorldToCellPosition(worldPosition);
+            return CellToEntityId(cellPosition);
+        }
+
         public bool IsLand(uint2 cellPosition)
         {
             var position = CellToCenterPosition(cellPosition);

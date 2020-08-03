@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using Code.ECS.Coin.Descriptors;
+using GreedyMerchants.ECS.Grid;
 using Svelto.ECS;
 using Svelto.Tasks;
 using Svelto.Tasks.Unity;
@@ -10,10 +11,12 @@ namespace GreedyMerchants.ECS.Coin
     public class CoinRecyclerEngine : IQueryingEntitiesEngine
     {
         IEntityFunctions _functions;
+        GridUtils _gridUtils;
 
-        public CoinRecyclerEngine(IEntityFunctions functions)
+        public CoinRecyclerEngine(IEntityFunctions functions, GridUtils gridUtils)
         {
             _functions = functions;
+            _gridUtils = gridUtils;
         }
 
         public EntitiesDB entitiesDB { get; set; }
@@ -35,6 +38,9 @@ namespace GreedyMerchants.ECS.Coin
                     {
                         coinViews[i].Physics.Enable = false;
                         _functions.SwapEntityGroup<CoinEntityDescriptor>(coins[i].ID, CoinGroups.RecycledCoinsGroup);
+
+                        var cellEgid = new EGID(_gridUtils.WorldToEnitityId(coinViews[i].Transform.Position.xy), CoinGroups.CellsWithCoins);
+                        _functions.SwapEntityGroup<GridCellEntityDescriptor>(cellEgid, CoinGroups.CellsWithoutCoins);
                     }
                 }
 

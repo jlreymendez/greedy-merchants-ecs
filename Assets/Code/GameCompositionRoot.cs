@@ -71,7 +71,7 @@ namespace GreedyMerchants
         {
             _enginesRoot.AddEngine(new CoinSpawningEngine(_seed, context.CoinDefinition, _entityFactory, _gameObjectFactory, _entityFunctions, _time));
             _enginesRoot.AddEngine(new CoinAnimationEngine(_time));
-            _enginesRoot.AddEngine(new CoinRecyclerEngine(_entityFunctions));
+            _enginesRoot.AddEngine(new CoinRecyclerEngine(_entityFunctions, _gridUtils));
         }
 
         public void OnContextDestroyed()
