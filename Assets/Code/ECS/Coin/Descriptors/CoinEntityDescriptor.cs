@@ -1,5 +1,6 @@
 ﻿using GreedyMerchants.ECS.Coin;
 using Svelto.ECS;
+using Svelto.ECS.Extensions.Unity;
 
 namespace Code.ECS.Coin.Descriptors
 {
@@ -11,6 +12,7 @@ namespace Code.ECS.Coin.Descriptors
             {
                 new ComponentBuilder<CoinComponent>(),
                 new ComponentBuilder<CoinViewComponent>(),
+                new ComponentBuilder<EGIDTrackerViewComponent>(),
             };
         }
     }

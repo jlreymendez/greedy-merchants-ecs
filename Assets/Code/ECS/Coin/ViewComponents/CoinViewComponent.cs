@@ -8,6 +8,7 @@ namespace GreedyMerchants.ECS.Coin
     {
         public ISpriteRendererComponent Renderer;
         public ITransformComponent Transform;
+        public IPhysicsComponent Physics;
 
         public EGID ID { get; set; }
     }

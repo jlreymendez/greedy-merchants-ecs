@@ -19,6 +19,7 @@ namespace GreedyMerchants
         EnginesRoot _enginesRoot;
         IEntityFactory _entityFactory;
         IEntityFunctions _entityFunctions;
+        IEntityStreamConsumerFactory _entityConsumerFactory;
         Time _time;
         GameObjectFactory _gameObjectFactory;
         GridUtils _gridUtils;
@@ -35,6 +36,7 @@ namespace GreedyMerchants
             _enginesRoot = new EnginesRoot(_scheduler);
             _entityFactory = _enginesRoot.GenerateEntityFactory();
             _entityFunctions = _enginesRoot.GenerateEntityFunctions();
+            _entityConsumerFactory = _enginesRoot.GenerateConsumerFactory();
 
             _time = new Time();
             _gameObjectFactory = new GameObjectFactory();
@@ -56,6 +58,8 @@ namespace GreedyMerchants
         {
             _enginesRoot.AddEngine(new ShipSpawningEngine(_entityFactory, _gameObjectFactory, context.ShipSpawns, context.Ship));
             _enginesRoot.AddEngine(new ShipMovementEngine(_time, _gridUtils));
+            _enginesRoot.AddEngine(new ShipCollisionsEngine());
+            _enginesRoot.AddEngine(new ShipCoinPickupEngine(_entityConsumerFactory));
         }
 
         void AddPlayerEngines(GameContext context)
@@ -67,6 +71,7 @@ namespace GreedyMerchants
         {
             _enginesRoot.AddEngine(new CoinSpawningEngine(_seed, context.CoinDefinition, _entityFactory, _gameObjectFactory, _entityFunctions, _time));
             _enginesRoot.AddEngine(new CoinAnimationEngine(_time));
+            _enginesRoot.AddEngine(new CoinRecyclerEngine(_entityFunctions));
         }
 
         public void OnContextDestroyed()

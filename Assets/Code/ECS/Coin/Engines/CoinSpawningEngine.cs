@@ -14,7 +14,9 @@ using Random = Unity.Mathematics.Random;
 
 namespace GreedyMerchants.ECS.Coin
 {
-    public class CoinSpawningEngine : IQueryingEntitiesEngine, IReactOnAddAndRemove<CoinViewComponent>, IReactOnSwap<CoinViewComponent>
+    public class CoinSpawningEngine : IQueryingEntitiesEngine,
+        IReactOnAddAndRemove<CoinViewComponent>,
+        IReactOnSwap<CoinViewComponent>, IReactOnSwap<CoinComponent>
     {
         readonly CoinDefinition _coinDefinition;
         readonly IEntityFunctions _functions;
@@ -47,6 +49,7 @@ namespace GreedyMerchants.ECS.Coin
             if (egid.groupID == CoinGroups.RecycledCoinsGroup)
             {
                 coinView.Renderer.Render = false;
+                coinView.Physics.Enable = false;
             }
         }
 
@@ -62,6 +65,16 @@ namespace GreedyMerchants.ECS.Coin
             {
                 coinView.Renderer.Render = true;
                 coinView.Renderer.Sprite = 0;
+                coinView.Physics.Enable = true;
+            }
+        }
+
+        public void MovedTo(ref CoinComponent coin, ExclusiveGroupStruct previousGroup, EGID egid)
+        {
+            if (egid.groupID == CoinGroups.SpawnedCoinsGroup)
+            {
+                coin.Picked = false;
+                coin.TimeToRespawn = _coinDefinition.CoinsSpawnTime;
             }
         }
 
