@@ -404,15 +404,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e77b67c6303a471db30908be8f8bf8f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Seed: 0
   Ship: {fileID: 11400000, guid: d02f7b42ced514c4bb0e22a72dfe620f, type: 2}
   ShipSpawns:
   - {fileID: 93071303}
   - {fileID: 1846479688}
   - {fileID: 1680548815}
   - {fileID: 797258997}
+  GridDefinition: {fileID: 11400000, guid: 678ae05b92b4a5c40ac5b936181c047e, type: 2}
   Grid: {fileID: 1383516658}
   LandTilemap: {fileID: 1028290381}
-  GridDefinition: {fileID: 11400000, guid: 678ae05b92b4a5c40ac5b936181c047e, type: 2}
+  CoinDefinition: {fileID: 11400000, guid: 76cd90359d4dfdd4fbd7ea17b5313342, type: 2}
 --- !u!1 &797258996
 GameObject:
   m_ObjectHideFlags: 0

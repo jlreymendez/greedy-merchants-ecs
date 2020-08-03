@@ -1,4 +1,5 @@
-﻿using GreedyMerchants.ECS.Grid;
+﻿using GreedyMerchants.ECS.Coin;
+using GreedyMerchants.ECS.Grid;
 using GreedyMerchants.ECS.Grid.Engines;
 using GreedyMerchants.ECS.Player;
 using GreedyMerchants.ECS.Ship;
@@ -7,6 +8,7 @@ using Svelto.Context;
 using Svelto.ECS;
 using Svelto.ECS.Schedulers.Unity;
 using Svelto.Tasks;
+using UnityEngine;
 using Time = GreedyMerchants.ECS.Unity.Time;
 
 namespace GreedyMerchants
@@ -20,6 +22,7 @@ namespace GreedyMerchants
         Time _time;
         GameObjectFactory _gameObjectFactory;
         GridUtils _gridUtils;
+        uint _seed;
 
         public void OnContextInitialized<T>(T contextHolder)
         {
@@ -36,10 +39,12 @@ namespace GreedyMerchants
             _time = new Time();
             _gameObjectFactory = new GameObjectFactory();
             _gridUtils = new GridUtils(context.Grid, context.LandTilemap, context.GridDefinition);
+            _seed = context.Seed == 0 ? (uint)Random.Range(int.MinValue, int.MinValue) : context.Seed;
 
             AddGridEngines(context);
             AddShipEngines(context);
             AddPlayerEngines(context);
+            AddCoinEngines(context);
         }
 
         void AddGridEngines(GameContext context)
@@ -56,6 +61,11 @@ namespace GreedyMerchants
         void AddPlayerEngines(GameContext context)
         {
             _enginesRoot.AddEngine(new PlayerInputEngine(new PlayerInput()));
+        }
+
+        void AddCoinEngines(GameContext context)
+        {
+            _enginesRoot.AddEngine(new CoinSpawningEngine(_seed, context.CoinDefinition, _entityFactory, _gameObjectFactory, _entityFunctions, _time));
         }
 
         public void OnContextDestroyed()

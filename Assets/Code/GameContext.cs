@@ -1,4 +1,5 @@
-﻿using GreedyMerchants.Data.Grid;
+﻿using Code.Data.Coin;
+using GreedyMerchants.Data.Grid;
 using GreedyMerchants.Data.Ship;
 using Svelto.Context;
 using UnityEngine;
@@ -8,13 +9,18 @@ namespace GreedyMerchants
 {
     public class GameContext : UnityContext<GameCompositionRoot>
     {
+        [Header("Random")]
+        public uint Seed;
+
         [Header("Ship")]
         public ShipDefinition Ship;
         public Transform[] ShipSpawns;
 
         [Header("Grid")]
+        public GridDefinition GridDefinition;
         public Grid Grid;
         public Tilemap LandTilemap;
-        public GridDefinition GridDefinition;
+
+        [Header("Coin")] public CoinDefinition CoinDefinition;
     }
 }
