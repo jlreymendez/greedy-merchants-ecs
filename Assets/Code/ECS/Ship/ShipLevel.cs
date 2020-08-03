@@ -1,9 +1,9 @@
 ﻿namespace GreedyMerchants.ECS.Ship
 {
-    public enum ShipType
+    public enum ShipLevel
     {
-        Normal,
         Merchant,
+        Normal,
         Pirate
     }
 }

@@ -64,15 +64,16 @@ namespace GreedyMerchants.ECS.Ship
                     Speed = _shipDefinition.Speed,
                     Direction = math.round(spawn.transform.right)
                 });
+                shipInitializer.Init(new ShipLevelComponent() { Level =  ShipLevel.Normal });
 
                 var spriteRenderer = ship.GetComponent<SpriteRendererImplementor>();
                 spriteRenderer.Sprites = new Sprite[]
                 {
-                    _shipDefinition.ShipSprites[i].GetAsset<Sprite>(),
                     _shipDefinition.MerchantSprite.GetAsset<Sprite>(),
+                    _shipDefinition.ShipSprites[i].GetAsset<Sprite>(),
                     _shipDefinition.PirateSprite.GetAsset<Sprite>()
                 };
-                spriteRenderer.Sprite = (int)ShipType.Normal;
+                spriteRenderer.Sprite = (int)ShipLevel.Normal;
             }
         }
     }

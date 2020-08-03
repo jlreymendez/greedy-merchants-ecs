@@ -33,3 +33,5 @@ MonoBehaviour:
   MerchantSprite:
     m_AssetGUID: 358836ed88d185a49b3bd0a0b482b0c0
     m_SubObjectName: 
+  TimeBetweenConversion: 10
+  ConversionTransitionTime: 2

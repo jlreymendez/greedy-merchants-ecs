@@ -60,6 +60,7 @@ namespace GreedyMerchants
             _enginesRoot.AddEngine(new ShipMovementEngine(_time, _gridUtils));
             _enginesRoot.AddEngine(new ShipCollisionsEngine());
             _enginesRoot.AddEngine(new ShipCoinPickupEngine(_entityConsumerFactory));
+            _enginesRoot.AddEngine(new ShipLevelConversionEngine(context.Ship));
         }
 
         void AddPlayerEngines(GameContext context)

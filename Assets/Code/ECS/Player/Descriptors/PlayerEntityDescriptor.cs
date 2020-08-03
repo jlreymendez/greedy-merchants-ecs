@@ -12,6 +12,7 @@ namespace GreedyMerchants.ECS.Player
             {
                 new ComponentBuilder<PointsComponent>(),
                 new ComponentBuilder<ShipComponent>(),
+                new ComponentBuilder<ShipLevelComponent>(),
                 new ComponentBuilder<ShipViewComponent>(),
                 new ComponentBuilder<EGIDTrackerViewComponent>(),
             };

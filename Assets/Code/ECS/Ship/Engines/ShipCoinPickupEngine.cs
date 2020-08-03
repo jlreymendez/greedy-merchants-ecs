@@ -43,7 +43,7 @@ namespace GreedyMerchants.ECS.Ship
             if (coin.Picked == false)
             {
                 coin.Picked = true;
-                var points = entitiesDB.QueryEntity<PointsComponent>(ship.ID);
+                ref var points = ref entitiesDB.QueryEntity<PointsComponent>(ship.ID);
                 points.Coins++;
             }
         }

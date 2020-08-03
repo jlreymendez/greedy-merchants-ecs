@@ -17,5 +17,8 @@ namespace GreedyMerchants.Data.Ship
         [FormerlySerializedAs("PlayerSprites")] public AssetReference[] ShipSprites;
         public AssetReference PirateSprite;
         public AssetReference MerchantSprite;
+
+        public float TimeBetweenConversion;
+        public float ConversionTransitionTime;
     }
 }
