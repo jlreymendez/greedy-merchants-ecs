@@ -15,5 +15,5 @@ MonoBehaviour:
   Prefab:
     m_AssetGUID: 805a625898056084c8fb5a775d6be6ed
     m_SubObjectName: 
-  MaxCoins: 100
-  CoinsSpawnTime: 0.2
+  MaxCoins: 80
+  CoinsSpawnTime: 1
