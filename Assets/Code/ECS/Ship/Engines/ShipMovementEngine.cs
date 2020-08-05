@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using GreedyMerchants.ECS.Grid;
 using GreedyMerchants.ECS.Unity;
+using GreedyMerchants.ECS.Extensions.Svelto;
 using Svelto.ECS;
 using Unity.Mathematics;
 
@@ -80,9 +81,11 @@ namespace GreedyMerchants.ECS.Ship
 
                     // Check grid for collisions.
                     var targetCellId = _gridUtils.CellToEntityId(ship.TargetGridCell);
-                    var validTarget =
-                        entitiesDB.Exists<GridCellComponent>(targetCellId, GridGroups.GridWaterHasCoinGroup) ||
-                        entitiesDB.Exists<GridCellComponent>(targetCellId, GridGroups.GridWaterNoCoinGroup);
+                    // note: this is a personal Svelto.ECS extension in GreedyMerchants.ECS.Extensions.Svelto to check for
+                        // an entity id inside multiple groups with a single API call.
+                        // There is an open discussion in the Svelto.ECS development team whether it is a good idea to
+                        // provide this API, since it is hiding the performance cost behind it.
+                    var validTarget = entitiesDB.Exists<GridCellComponent>(targetCellId, GridGroups.GridWaterGroups);
 
                     if (validTarget == false)
                     {

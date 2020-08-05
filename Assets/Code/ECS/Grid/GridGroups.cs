@@ -14,6 +14,7 @@ namespace GreedyMerchants.ECS.Grid
         public class NO_COIN : GroupTag<NO_COIN> {}
 
         public class GridLandGroupCompound : GroupCompound<GRID_CELL, LAND> {}
+        public class GridWaterGroupCompound : GroupCompound<GRID_CELL, WATER> {}
         public class GridWaterHasCoinGroupCompound : GroupCompound<GRID_CELL, WATER, NO_COIN> {}
         public class GridWaterNoCoinGroupCompound : GroupCompound<GRID_CELL, WATER, HAS_COIN> {}
 
@@ -21,9 +22,7 @@ namespace GreedyMerchants.ECS.Grid
         public static readonly ExclusiveGroupStruct GridWaterHasCoinGroup = GridWaterHasCoinGroupCompound.BuildGroup;
         public static readonly ExclusiveGroupStruct GridWaterNoCoinGroup = GridWaterNoCoinGroupCompound.BuildGroup;
 
-        public static readonly FasterReadOnlyList<ExclusiveGroupStruct> GridWaterGroup = new FasterList<ExclusiveGroupStruct>(
-            new ExclusiveGroupStruct[] { GridWaterHasCoinGroup, GridWaterNoCoinGroup }
-        );
+        public static readonly FasterReadOnlyList<ExclusiveGroupStruct> GridWaterGroups = GridWaterGroupCompound.Groups;
     }
 }
 
