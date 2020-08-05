@@ -1,11 +1,7 @@
 ﻿using System.Collections;
-using System.Diagnostics;
-using GreedyMerchants.Data;
 using GreedyMerchants.Data.Ship;
 using Svelto.ECS;
 using Svelto.Tasks.Enumerators;
-using UnityEditor.Experimental.GraphView;
-using Debug = UnityEngine.Debug;
 
 namespace GreedyMerchants.ECS.Ship
 {
@@ -46,7 +42,7 @@ namespace GreedyMerchants.ECS.Ship
         void ProcessNextLevelSelection()
         {
             var shipQuery =
-                entitiesDB.QueryEntities<ShipLevelComponent, PointsComponent>(GameGroups.Ships);
+                entitiesDB.QueryEntities<ShipLevelComponent, PointsComponent>(ShipGroups.Ships);
             var invalidEgid = new EGID();
             var pirateEgid = invalidEgid;
             var merchantEgid = invalidEgid;
@@ -106,7 +102,7 @@ namespace GreedyMerchants.ECS.Ship
         void AnimateFrame(int frame)
         {
             var nextLevelFrame = frame % 2 == 0;
-            var shipQuery = entitiesDB.QueryEntities<ShipLevelComponent, ShipViewComponent>(GameGroups.Ships);
+            var shipQuery = entitiesDB.QueryEntities<ShipLevelComponent, ShipViewComponent>(ShipGroups.Ships);
             foreach (var (shipLevels, shipViews, count) in shipQuery.groups)
             {
                 for (var i = 0; i < count; i++)
@@ -118,7 +114,7 @@ namespace GreedyMerchants.ECS.Ship
 
         void Convert()
         {
-            var shipQuery = entitiesDB.QueryEntities<ShipComponent, ShipLevelComponent, ShipViewComponent>(GameGroups.Ships);
+            var shipQuery = entitiesDB.QueryEntities<ShipComponent, ShipLevelComponent, ShipViewComponent>(ShipGroups.Ships);
             foreach (var (ships, shipLevels, shipViews, count) in shipQuery.groups)
             {
                 for (var i = 0; i < count; i++)
