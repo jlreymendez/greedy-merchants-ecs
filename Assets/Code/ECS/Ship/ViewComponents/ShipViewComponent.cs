@@ -8,6 +8,8 @@ namespace GreedyMerchants.ECS.Ship
     {
         public ITransformComponent Transform;
         public ISpriteRendererComponent Renderer;
+        public IPhysicsComponent Physics;
+        public IShipExplosionComponent Explosion;
         public IShipTriggerComponent Trigger;
 
         public EGID ID { get; set; }
