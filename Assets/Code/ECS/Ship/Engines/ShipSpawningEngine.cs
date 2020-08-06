@@ -2,29 +2,43 @@
 using System.Collections;
 using GreedyMerchants.Data.Ship;
 using GreedyMerchants.ECS.Common;
+using GreedyMerchants.ECS.Extensions.Svelto;
+using GreedyMerchants.ECS.Grid;
 using GreedyMerchants.ECS.Player;
 using GreedyMerchants.ECS.Unity;
 using GreedyMerchants.ECS.Unity.Extensions;
 using Svelto.ECS;
 using Svelto.Tasks;
+using Svelto.Tasks.Enumerators;
 using Unity.Mathematics;
 using UnityEngine;
+using Random = Unity.Mathematics.Random;
 
 namespace GreedyMerchants.ECS.Ship
 {
-    public class ShipSpawningEngine : IQueryingEntitiesEngine
+    public class ShipSpawningEngine : IQueryingEntitiesEngine, IReactOnSwap<ShipViewComponent>
     {
-        IEntityFactory _entityFactory;
-        GameObjectFactory _gameObjectFactory;
-        Transform[] _spawnPoints;
-        ShipDefinition _shipDefinition;
+        readonly IEntityFactory _entityFactory;
+        readonly IEntityFunctions _functions;
+        readonly GameObjectFactory _gameObjectFactory;
+        readonly Transform[] _spawnPoints;
+        readonly ShipDefinition _shipDefinition;
+        WaitForSecondsEnumerator _respawnWait;
+        WaitForSecondsEnumerator _transitionWait;
+        WaitForSecondsEnumerator _animationWait;
+        Random _random;
 
-        public ShipSpawningEngine(IEntityFactory entityFactory, GameObjectFactory gameObjectFactory, Transform[] spawnPoints, ShipDefinition shipDefinition)
+        public ShipSpawningEngine(uint seed, IEntityFactory entityFactory, IEntityFunctions functions, GameObjectFactory gameObjectFactory, Transform[] spawnPoints, ShipDefinition shipDefinition)
         {
             _entityFactory = entityFactory;
+            _functions = functions;
             _gameObjectFactory = gameObjectFactory;
             _spawnPoints = spawnPoints;
             _shipDefinition = shipDefinition;
+            _respawnWait = new WaitForSecondsEnumerator(_shipDefinition.TimeToRespawn);
+            _transitionWait = new WaitForSecondsEnumerator(_shipDefinition.RespawnTransitionTime);
+            _animationWait = new WaitForSecondsEnumerator(_shipDefinition.BlinkAnimationTime);
+            _random = new Random(seed);
         }
 
         public EntitiesDB entitiesDB { get; set; }
@@ -36,6 +50,10 @@ namespace GreedyMerchants.ECS.Ship
 
         IEnumerator Tick()
         {
+            // Register possible transitions.
+            GroupCompound<SHIP, AI>.BuildGroup.SetTagSwap<SHIP, SUNK_SHIP>(GroupCompound<SUNK_SHIP, AI>.BuildGroup);
+            GroupCompound<SHIP, PLAYER>.BuildGroup.SetTagSwap<SHIP, SUNK_SHIP>(GroupCompound<SUNK_SHIP, PLAYER>.BuildGroup);
+
             yield return InitialSpawning();
         }
 
@@ -76,5 +94,45 @@ namespace GreedyMerchants.ECS.Ship
                 spriteRenderer.Sprite = (int)ShipLevel.Normal;
             }
         }
+
+        public void MovedTo(ref ShipViewComponent shipView, ExclusiveGroupStruct previousGroup, EGID egid)
+        {
+            if (GroupTagExtensions.Contains<SUNK_SHIP>(egid.groupID))
+            {
+                Respawn(shipView, egid).Run();
+            }
+        }
+        IEnumerator Respawn(ShipViewComponent shipView, EGID egid)
+        {
+            yield return _respawnWait;
+
+            Relocate(shipView, egid);
+
+            var targetGroup = egid.groupID.GetSwapTag<SUNK_SHIP, SHIP>();
+            _functions.SwapEntityGroup<PlayerEntityDescriptor>(egid, targetGroup);
+
+            var render = false;
+            while (_transitionWait.MoveNext())
+            {
+                render = !render;
+                shipView.Renderer.Render = render;
+
+                yield return _animationWait;
+            }
+
+            shipView.Renderer.Render = true;
+            shipView.Physics.Enable = true;
+        }
+
+        void Relocate(ShipViewComponent shipView, EGID egid)
+        {
+            var (cells, count) = entitiesDB.QueryEntities<GridCellComponent>(GridGroups.GridWaterHasCoinGroup);
+            var index = _random.NextInt(0, count);
+
+            ref var ship = ref entitiesDB.QueryEntity<ShipComponent>(egid);
+            ship.GridCell = cells[index].Position;
+            shipView.Transform.Position = new float3(cells[index].WorldCenter, 0);
+        }
+
     }
 }

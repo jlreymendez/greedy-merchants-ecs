@@ -13,10 +13,10 @@ namespace GreedyMerchants.ECS.Ship
         public static readonly FasterReadOnlyList<ExclusiveGroupStruct> Ships = new FasterList<ExclusiveGroupStruct>()
             .AddRange(AliveShips)
             .Add(SunkShip);
-
-        public class SHIP : GroupTag<SHIP> {}
-        public class SUNK_SHIP: GroupTag<SUNK_SHIP> {}
-        public class AI : GroupTag<AI> {}
-        public class PLAYER : GroupTag<PLAYER> {}
     }
+
+    public class SHIP : GroupTag<SHIP> {}
+    public class SUNK_SHIP: GroupTag<SUNK_SHIP> {}
+    public class AI : GroupTag<AI> {}
+    public class PLAYER : GroupTag<PLAYER> {}
 }

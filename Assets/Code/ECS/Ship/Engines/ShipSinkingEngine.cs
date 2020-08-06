@@ -1,4 +1,5 @@
-﻿using Svelto.ECS;
+﻿using GreedyMerchants.ECS.Extensions.Svelto;
+using Svelto.ECS;
 
 namespace GreedyMerchants.ECS.Ship
 {
@@ -10,7 +11,7 @@ namespace GreedyMerchants.ECS.Ship
 
         public void MovedTo(ref ShipViewComponent entityComponent, ExclusiveGroupStruct previousGroup, EGID egid)
         {
-            if (egid.groupID == ShipGroups.SunkShip)
+            if (GroupTagExtensions.Contains<SUNK_SHIP>(egid.groupID))
             {
                 entityComponent.Renderer.Render = false;
                 entityComponent.Physics.Enable = false;

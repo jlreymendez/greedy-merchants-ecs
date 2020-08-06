@@ -1,7 +1,5 @@
-﻿using UnityEditor.VersionControl;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AddressableAssets;
-using UnityEngine.Serialization;
 
 namespace GreedyMerchants.Data.Ship
 {
@@ -14,11 +12,16 @@ namespace GreedyMerchants.Data.Ship
         public float PirateSpeed;
         public float MerchantSpeed;
 
-        [FormerlySerializedAs("PlayerSprites")] public AssetReference[] ShipSprites;
+        public AssetReference[] ShipSprites;
         public AssetReference PirateSprite;
         public AssetReference MerchantSprite;
 
         public float TimeBetweenConversion;
         public float ConversionTransitionTime;
+
+        public float TimeToRespawn;
+        public float RespawnTransitionTime;
+
+        public float BlinkAnimationTime = 0.15f;
     }
 }

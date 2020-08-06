@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using GreedyMerchants.Data.Ship;
+using GreedyMerchants.ECS.Extensions.Svelto;
 using GreedyMerchants.ECS.Player;
 using Svelto.ECS;
 using Unity.Mathematics;
@@ -54,7 +55,8 @@ namespace GreedyMerchants.ECS.Ship
                 otherPoints.Coins -= coinDrop;
 
                 // Sunk the other ship.
-                _functions.SwapEntityGroup<PlayerEntityDescriptor>(ship.Collision.EntityId, ShipGroups.SunkShip);
+                var targetGroup = ship.ID.groupID.GetSwapTag<SHIP, SUNK_SHIP>();
+                _functions.SwapEntityGroup<PlayerEntityDescriptor>(ship.Collision.EntityId, targetGroup);
             }
         }
     }

@@ -19,7 +19,7 @@ namespace GreedyMerchants.ECS.Ship
 
             _conversionWait = new WaitForSecondsEnumerator(shipDefinition.TimeBetweenConversion);
             _transitionWait = new WaitForSecondsEnumerator(shipDefinition.ConversionTransitionTime);
-            _animationWait = new WaitForSecondsEnumerator(0.15f);
+            _animationWait = new WaitForSecondsEnumerator(shipDefinition.BlinkAnimationTime);
         }
 
         public EntitiesDB entitiesDB { get; set; }

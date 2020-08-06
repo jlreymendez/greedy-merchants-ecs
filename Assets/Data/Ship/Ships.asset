@@ -35,3 +35,6 @@ MonoBehaviour:
     m_SubObjectName: 
   TimeBetweenConversion: 10
   ConversionTransitionTime: 2
+  TimeToRespawn: 3
+  RespawnTransitionTime: 2
+  BlinkAnimationTime: 0.15
