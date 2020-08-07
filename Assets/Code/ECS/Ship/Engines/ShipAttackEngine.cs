@@ -57,7 +57,7 @@ namespace GreedyMerchants.ECS.Ship
                 // Sunk the other ship.
                 // note: maybe this should be handled with a public entity change.
                 var targetGroup = ship.ID.groupID.SwapTag<SUNK_SHIP>();
-                _functions.SwapEntityGroup<PlayerEntityDescriptor>(ship.Collision.EntityId, targetGroup);
+                _functions.SwapEntityGroup<ShipEntityDescriptor>(ship.Collision.EntityId, targetGroup);
             }
         }
     }

@@ -111,7 +111,7 @@ namespace GreedyMerchants.ECS.Extensions.Svelto
             var type = new RefWrapper<Type>(typeof(TAdd));
             transitions[type] = target;
 
-            // To avoid needing to check if the group already has the tag when swaping (preven ecs exceptions).
+            // To avoid needing to check if the group already has the tag when swaping (prevent ecs exceptions).
             // The current groups adds the removed tag pointing to itself.
             type = new RefWrapper<Type>(typeof(TRemove));
             transitions[type] = group;

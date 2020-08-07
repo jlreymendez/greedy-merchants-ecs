@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using GreedyMerchants.Data.Ship;
 using GreedyMerchants.ECS.Common;
@@ -51,7 +51,10 @@ namespace GreedyMerchants.ECS.Ship
         IEnumerator Tick()
         {
             // Register possible transitions.
-            GroupCompound<SHIP, AI>.BuildGroup.SetTagSwap<SHIP, SUNK_SHIP>(GroupCompound<SUNK_SHIP, AI>.BuildGroup);
+            GroupCompound<SHIP, AI, PIRATE>.BuildGroup.SetTagSwap<SHIP, SUNK_SHIP>(GroupCompound<SUNK_SHIP, AI, PIRATE>.BuildGroup);
+            GroupCompound<SHIP, AI, MERCHANT>.BuildGroup.SetTagSwap<SHIP, SUNK_SHIP>(GroupCompound<SUNK_SHIP, AI, MERCHANT>.BuildGroup);
+            GroupCompound<SHIP, AI, NORMAL>.BuildGroup.SetTagSwap<SHIP, SUNK_SHIP>(GroupCompound<SUNK_SHIP, AI, NORMAL>.BuildGroup);
+
             GroupCompound<SHIP, PLAYER>.BuildGroup.SetTagSwap<SHIP, SUNK_SHIP>(GroupCompound<SUNK_SHIP, PLAYER>.BuildGroup);
 
             yield return InitialSpawning();
@@ -73,26 +76,31 @@ namespace GreedyMerchants.ECS.Ship
             uint id = 0;
             for (var i = 0; i < _spawnPoints.Length; i++)
             {
-                var spawn = _spawnPoints[i];
-                var (ship, implementors) =
-                    _gameObjectFactory.BuildForEntity(_shipDefinition.Prefab.GetAsset<GameObject>(), spawn.position, spawn.rotation);
-
-                var shipInitializer = _entityFactory.BuildEntity<PlayerEntityDescriptor>(id++, ShipGroups.PlayerShip, implementors);
-                shipInitializer.Init(new ShipComponent {
-                    Speed = _shipDefinition.Speed,
-                    Direction = math.round(spawn.transform.right)
-                });
-                shipInitializer.Init(new ShipLevelComponent() { Level =  ShipLevel.Normal });
-
-                var spriteRenderer = ship.GetComponent<SpriteRendererImplementor>();
-                spriteRenderer.Sprites = new Sprite[]
-                {
-                    _shipDefinition.MerchantSprite.GetAsset<Sprite>(),
-                    _shipDefinition.ShipSprites[i].GetAsset<Sprite>(),
-                    _shipDefinition.PirateSprite.GetAsset<Sprite>()
-                };
-                spriteRenderer.Sprite = (int)ShipLevel.Normal;
+                Spawn((uint)i, _spawnPoints[i], i == 0 ? ShipControl.Player : ShipControl.Ai);
             }
+        }
+
+        void Spawn(uint id, Transform spawn, ShipControl control)
+        {
+            var (ship, implementors) =
+                _gameObjectFactory.BuildForEntity(_shipDefinition.Prefab.GetAsset<GameObject>(), spawn.position, spawn.rotation);
+
+            var group = control == ShipControl.Player ? ShipGroups.PlayerShip : ShipGroups.AiNormalShip;
+            var shipInitializer = _entityFactory.BuildEntity<ShipEntityDescriptor>(id, group, implementors);
+            shipInitializer.Init(new ShipComponent {
+                Speed = _shipDefinition.Speed,
+                Direction = math.round(spawn.transform.right)
+            });
+            shipInitializer.Init(new ShipLevelComponent() { Level =  ShipLevel.Normal });
+
+            var spriteRenderer = ship.GetComponent<SpriteRendererImplementor>();
+            spriteRenderer.Sprites = new Sprite[]
+            {
+                _shipDefinition.MerchantSprite.GetAsset<Sprite>(),
+                _shipDefinition.ShipSprites[id].GetAsset<Sprite>(),
+                _shipDefinition.PirateSprite.GetAsset<Sprite>()
+            };
+            spriteRenderer.Sprite = (int)ShipLevel.Normal;
         }
 
         public void MovedTo(ref ShipViewComponent shipView, ExclusiveGroupStruct previousGroup, EGID egid)
@@ -109,7 +117,7 @@ namespace GreedyMerchants.ECS.Ship
             Relocate(shipView, egid);
 
             var targetGroup = egid.groupID.SwapTag<SHIP>();
-            _functions.SwapEntityGroup<PlayerEntityDescriptor>(egid, targetGroup);
+            _functions.SwapEntityGroup<ShipEntityDescriptor>(egid, targetGroup);
 
             var render = false;
             while (_transitionWait.MoveNext())
