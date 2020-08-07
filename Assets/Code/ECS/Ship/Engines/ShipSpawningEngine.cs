@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using GreedyMerchants.Data.Ship;
 using GreedyMerchants.ECS.Common;
@@ -108,7 +108,7 @@ namespace GreedyMerchants.ECS.Ship
 
             Relocate(shipView, egid);
 
-            var targetGroup = egid.groupID.SwapTag<SUNK_SHIP, SHIP>();
+            var targetGroup = egid.groupID.SwapTag<SHIP>();
             _functions.SwapEntityGroup<PlayerEntityDescriptor>(egid, targetGroup);
 
             var render = false;

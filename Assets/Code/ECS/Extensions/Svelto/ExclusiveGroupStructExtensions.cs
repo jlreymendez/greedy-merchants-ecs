@@ -47,10 +47,10 @@ namespace GreedyMerchants.ECS.Extensions.Svelto
             );
         }
 
-        public static ExclusiveGroupStruct SwapTag<TRemoveTag, TAddTag>(this ExclusiveGroupStruct group)
-            where TRemoveTag : GroupTag<TRemoveTag> where TAddTag : GroupTag<TAddTag>
+        public static ExclusiveGroupStruct SwapTag<TTarget>(this ExclusiveGroupStruct group)
+            where TTarget : GroupTag<TTarget>
         {
-            var type =  new RefWrapper<Type>(typeof(GroupTagSwapTemplate<TRemoveTag, TAddTag>));
+            var type =  new RefWrapper<Type>(typeof(TTarget));
             if (_swapTransitions.TryGetValue(group, out var transitions))
             {
                 if (transitions.TryGetValue(type, out var result))
@@ -59,9 +59,8 @@ namespace GreedyMerchants.ECS.Extensions.Svelto
                 }
             }
 
-            throw new ECSException("No swap transition found for types "
-                .FastConcat(typeof(TRemoveTag).ToString(), " => ")
-                .FastConcat(typeof(TAddTag).ToString())
+            throw new ECSException("No swap transition found for type "
+                .FastConcat(typeof(TTarget).ToString())
                 .FastConcat(" in group ").FastConcat(group)
             );
         }
@@ -79,7 +78,7 @@ namespace GreedyMerchants.ECS.Extensions.Svelto
 
             if (setReverse)
             {
-                SetTagRemoval<T>(target, group);
+                SetTagRemoval<T>(target, group, false);
             }
         }
 
@@ -96,10 +95,9 @@ namespace GreedyMerchants.ECS.Extensions.Svelto
 
             if (setReverse)
             {
-                SetTagAddition<T>(target, group);
+                SetTagAddition<T>(target, group, false);
             }
         }
-
 
         public static void SetTagSwap<TRemove, TAdd>(this ExclusiveGroupStruct group, ExclusiveGroupStruct target, bool setReverse = true)
             where TRemove : GroupTag<TRemove> where TAdd : GroupTag<TAdd>
@@ -110,8 +108,13 @@ namespace GreedyMerchants.ECS.Extensions.Svelto
                 _swapTransitions[group] = transitions;
             }
 
-            var type = new RefWrapper<Type>(typeof(GroupTagSwapTemplate<TRemove, TAdd>));
+            var type = new RefWrapper<Type>(typeof(TAdd));
             transitions[type] = target;
+
+            // To avoid needing to check if the group already has the tag when swaping (preven ecs exceptions).
+            // The current groups adds the removed tag pointing to itself.
+            type = new RefWrapper<Type>(typeof(TRemove));
+            transitions[type] = group;
 
             if (setReverse)
             {
@@ -119,6 +122,4 @@ namespace GreedyMerchants.ECS.Extensions.Svelto
             }
         }
     }
-
-    static class GroupTagSwapTemplate<TRemove, TAdd> where TRemove : GroupTag<TRemove> where TAdd : GroupTag<TAdd> { }
 }
