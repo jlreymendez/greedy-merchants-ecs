@@ -55,7 +55,7 @@ namespace GreedyMerchants.ECS.Ship
                 otherPoints.Coins -= coinDrop;
 
                 // Sunk the other ship.
-                var targetGroup = ship.ID.groupID.GetSwapTag<SHIP, SUNK_SHIP>();
+                var targetGroup = ship.ID.groupID.SwapTag<SHIP, SUNK_SHIP>();
                 _functions.SwapEntityGroup<PlayerEntityDescriptor>(ship.Collision.EntityId, targetGroup);
             }
         }
