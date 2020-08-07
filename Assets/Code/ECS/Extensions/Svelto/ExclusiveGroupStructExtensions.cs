@@ -13,7 +13,7 @@ namespace GreedyMerchants.ECS.Extensions.Svelto
         static FasterDictionary<uint, FasterDictionary<RefWrapper<Type>, ExclusiveGroupStruct>> _swapTransitions
             = new FasterDictionary<uint, FasterDictionary<RefWrapper<Type>, ExclusiveGroupStruct>>();
 
-        public static ExclusiveGroupStruct GetRemoveTag<T>(this ExclusiveGroupStruct group) where T : GroupTag<T>
+        public static ExclusiveGroupStruct RemoveTag<T>(this ExclusiveGroupStruct group) where T : GroupTag<T>
         {
             if (_removeTransitions.TryGetValue(group, out var transitions))
             {
@@ -30,7 +30,7 @@ namespace GreedyMerchants.ECS.Extensions.Svelto
             );
         }
 
-        public static ExclusiveGroupStruct GetAddTag<T>(this ExclusiveGroupStruct group) where T : GroupTag<T>
+        public static ExclusiveGroupStruct AddTag<T>(this ExclusiveGroupStruct group) where T : GroupTag<T>
         {
             if (_addTransitions.TryGetValue(group, out var transitions))
             {
@@ -47,7 +47,7 @@ namespace GreedyMerchants.ECS.Extensions.Svelto
             );
         }
 
-        public static ExclusiveGroupStruct GetSwapTag<TRemoveTag, TAddTag>(this ExclusiveGroupStruct group)
+        public static ExclusiveGroupStruct SwapTag<TRemoveTag, TAddTag>(this ExclusiveGroupStruct group)
             where TRemoveTag : GroupTag<TRemoveTag> where TAddTag : GroupTag<TAddTag>
         {
             var type =  new RefWrapper<Type>(typeof(GroupTagSwapTemplate<TRemoveTag, TAddTag>));
@@ -66,7 +66,7 @@ namespace GreedyMerchants.ECS.Extensions.Svelto
             );
         }
 
-        public static void SetTagAddition<T>(this ExclusiveGroupStruct group, ExclusiveGroupStruct target) where T : GroupTag<T>
+        public static void SetTagAddition<T>(this ExclusiveGroupStruct group, ExclusiveGroupStruct target, bool setReverse = true) where T : GroupTag<T>
         {
             if (_addTransitions.TryGetValue(group, out var transitions) == false)
             {
@@ -76,9 +76,14 @@ namespace GreedyMerchants.ECS.Extensions.Svelto
 
             var type = new RefWrapper<Type>(typeof(T));
             transitions[type] = target;
+
+            if (setReverse)
+            {
+                SetTagRemoval<T>(target, group);
+            }
         }
 
-        public static void SetTagRemoval<T>(this ExclusiveGroupStruct group, ExclusiveGroupStruct target) where T : GroupTag<T>
+        public static void SetTagRemoval<T>(this ExclusiveGroupStruct group, ExclusiveGroupStruct target, bool setReverse = true) where T : GroupTag<T>
         {
             if (_removeTransitions.TryGetValue(group, out var transitions) == false)
             {
@@ -88,6 +93,11 @@ namespace GreedyMerchants.ECS.Extensions.Svelto
 
             var type = new RefWrapper<Type>(typeof(T));
             transitions[type] = target;
+
+            if (setReverse)
+            {
+                SetTagAddition<T>(target, group);
+            }
         }
 
 

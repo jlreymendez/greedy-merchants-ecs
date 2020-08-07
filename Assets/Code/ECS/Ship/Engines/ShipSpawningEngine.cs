@@ -108,7 +108,7 @@ namespace GreedyMerchants.ECS.Ship
 
             Relocate(shipView, egid);
 
-            var targetGroup = egid.groupID.GetSwapTag<SUNK_SHIP, SHIP>();
+            var targetGroup = egid.groupID.SwapTag<SUNK_SHIP, SHIP>();
             _functions.SwapEntityGroup<PlayerEntityDescriptor>(egid, targetGroup);
 
             var render = false;
