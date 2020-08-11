@@ -1,11 +1,12 @@
-﻿using Svelto.Common;
+﻿using System;
+using Svelto.Common;
 using Svelto.ECS;
 using Svelto.ECS.DataStructures;
 using Unity.Mathematics;
 
 namespace GreedyMerchants.ECS.Grid.Engines
 {
-    public class GridSpawningEngine : IQueryingEntitiesEngine
+    public class GridSpawningEngine : IQueryingEntitiesEngine, IDisposable
     {
         readonly IEntityFactory _entityFactory;
         readonly GridUtils _gridUtils;
@@ -53,6 +54,12 @@ namespace GreedyMerchants.ECS.Grid.Engines
             }
 
             gridInitializer.Init(new GridComponent { WalkableGrid = walkableGrid });
+        }
+
+        public void Dispose()
+        {
+            var grid = entitiesDB.QueryEntity<GridComponent>(0, GridGroups.Grid);
+            grid.WalkableGrid.Dispose();
         }
     }
 }
