@@ -29,6 +29,11 @@ namespace GreedyMerchants.ECS.Ship
 
         IEnumerator Tick()
         {
+            while (entitiesDB.Count<GridComponent>(GridGroups.Grid) == 0)
+            {
+                yield return null;
+            }
+
             while (true)
             {
                 Process();
@@ -39,19 +44,21 @@ namespace GreedyMerchants.ECS.Ship
 
         void Process()
         {
-            var query = entitiesDB.QueryEntities<ShipComponent, ShipViewComponent>(ShipGroups.AliveShips);
-            foreach (var (ships, shipViews, count) in query.groups)
+            var query = entitiesDB.QueryEntities<ShipComponent, ShipNavigationComponent, ShipViewComponent>(ShipGroups.AliveShips);
+            var grid = entitiesDB.QueryEntity<GridComponent>(0, GridGroups.Grid);
+            foreach (var (ships, navigations, views, count) in query.groups)
             {
                 for (var i = 0; i < count; i++)
                 {
                     ref var ship = ref ships[i];
-                    ref var shipView = ref shipViews[i];
+                    ref var navigation = ref navigations[i];
+                    ref var view = ref views[i];
 
                     // Update direction.
-                    var right = math.round(shipView.Transform.Right);
-                    var currentPosition = shipView.Transform.Position;
+                    var right = math.round(view.Transform.Right);
+                    var currentPosition = view.Transform.Position;
                     var isTurning = math.abs(math.dot(right, ship.Direction)) < MinDistance;
-                    var cellCenter = new float3(_gridUtils.CellToCenterPosition(ship.GridCell), 0);
+                    var cellCenter = new float3(_gridUtils.CellToCenterPosition(navigation.GridCell), 0);
                     if (isTurning)
                     {
                         // Ship is turning (only rotate if we are at the center of a tile.
@@ -69,37 +76,39 @@ namespace GreedyMerchants.ECS.Ship
                     }
 
                     // Select target cell, if we are turning we might want to turn in the current cell.
-                    ship.TargetGridCell = ship.GridCell + (uint2)math.sign(right).xy;
+                    navigation.TargetGridCell = navigation.GridCell + (uint2)math.sign(right).xy;
                     if (isTurning)
                     {
                         var directionToCenter = math.sign(cellCenter - currentPosition);
                         if (right.Equals(directionToCenter))
                         {
-                            ship.TargetGridCell = ship.GridCell;
+                            navigation.TargetGridCell = navigation.GridCell;
                         }
                     }
 
                     // Check grid for collisions.
-                    var targetCellId = _gridUtils.CellToEntityId(ship.TargetGridCell);
-                    // note: this is a personal Svelto.ECS extension in GreedyMerchants.ECS.Extensions.Svelto to check for
-                        // an entity id inside multiple groups with a single API call.
-                        // There is an open discussion in the Svelto.ECS development team whether it is a good idea to
-                        // provide this API, since it is hiding the performance cost behind it.
-                    var validTarget = entitiesDB.Exists<GridCellComponent>(targetCellId, GridGroups.GridWaterGroups);
-
-                    if (validTarget == false)
+                    var targetCellId = _gridUtils.CellToEntityId(navigation.TargetGridCell);
+                    if (grid.WalkableGrid.Get<bool>(targetCellId) == false)
                     {
-                        ship.TargetGridCell = ship.GridCell;
+                        navigation.TargetGridCell = navigation.GridCell;
                     }
 
                     // Advance position.
-                    var targetPosition = new float3(_gridUtils.CellToCenterPosition(ship.TargetGridCell), 0);
+                    var targetPosition = new float3(_gridUtils.CellToCenterPosition(navigation.TargetGridCell), 0);
                     var distanceToTarget = math.distance(targetPosition, currentPosition);
                     var advanceDistance = ship.Speed * _time.DeltaTime;
 
-                    ship.GridCell = _gridUtils.WorldToCellPosition(currentPosition.xy);
-                    shipView.Transform.Position = currentPosition + right * (distanceToTarget < advanceDistance ? distanceToTarget : advanceDistance);
-                    shipView.Transform.Right = right;
+                    // Update view.
+                    view.Transform.Position = currentPosition + right * (distanceToTarget < advanceDistance ? distanceToTarget : advanceDistance);
+                    view.Transform.Right = right;
+
+                    // Update cell if needed.
+                    var currentCell = _gridUtils.WorldToCellPosition(currentPosition.xy);
+                    if (currentCell.Equals(navigation.GridCell) == false)
+                    {
+                        navigation.GridCell = _gridUtils.WorldToCellPosition(currentPosition.xy);
+                        entitiesDB.PublishEntityChange<ShipNavigationComponent>(ship.ID);
+                    }
                 }
             }
         }

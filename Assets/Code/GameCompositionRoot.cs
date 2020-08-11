@@ -1,4 +1,4 @@
-﻿using GreedyMerchants.ECS.Coin;
+using GreedyMerchants.ECS.Coin;
 using GreedyMerchants.ECS.Grid;
 using GreedyMerchants.ECS.Grid.Engines;
 using GreedyMerchants.ECS.Player;
@@ -51,7 +51,8 @@ namespace GreedyMerchants
 
         void AddGridEngines(GameContext context)
         {
-            _enginesRoot.AddEngine(new GridSpawningEngine(_entityFactory, _gridUtils));
+            var gridLand = new GridTilemapRepresentation(context.Grid, context.LandTilemap, _gridUtils);
+            _enginesRoot.AddEngine(new GridSpawningEngine(_entityFactory, _gridUtils, gridLand));
         }
 
         void AddShipEngines(GameContext context)

@@ -137,10 +137,9 @@ namespace GreedyMerchants.ECS.Ship
             var (cells, count) = entitiesDB.QueryEntities<GridCellComponent>(GridGroups.GridWaterHasCoinGroup);
             var index = _random.NextInt(0, count);
 
-            ref var ship = ref entitiesDB.QueryEntity<ShipComponent>(egid);
-            ship.GridCell = cells[index].Position;
+            ref var navigation = ref entitiesDB.QueryEntity<ShipNavigationComponent>(egid);
+            navigation.GridCell = cells[index].Position;
             shipView.Transform.Position = new float3(cells[index].WorldCenter, 0);
         }
-
     }
 }

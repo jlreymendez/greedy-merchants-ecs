@@ -1,4 +1,5 @@
-﻿using Svelto.ECS;
+﻿using GreedyMerchants.ECS.AI.Components;
+using Svelto.ECS;
 using Svelto.ECS.Extensions.Unity;
 
 namespace GreedyMerchants.ECS.Ship
@@ -12,8 +13,11 @@ namespace GreedyMerchants.ECS.Ship
                 new ComponentBuilder<PointsComponent>(),
                 new ComponentBuilder<ShipComponent>(),
                 new ComponentBuilder<ShipLevelComponent>(),
+                new ComponentBuilder<ShipNavigationComponent>(),
                 new ComponentBuilder<ShipViewComponent>(),
                 new ComponentBuilder<EGIDTrackerViewComponent>(),
+                // note: Being lazy here. I should create different entity descriptors for ai and player.
+                new ComponentBuilder<AITarget>(),
             };
         }
     }

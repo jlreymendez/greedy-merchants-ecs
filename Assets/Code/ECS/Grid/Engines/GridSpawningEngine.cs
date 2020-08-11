@@ -1,5 +1,6 @@
-﻿using System.Collections;
+﻿using Svelto.Common;
 using Svelto.ECS;
+using Svelto.ECS.DataStructures;
 using Unity.Mathematics;
 
 namespace GreedyMerchants.ECS.Grid.Engines
@@ -8,11 +9,13 @@ namespace GreedyMerchants.ECS.Grid.Engines
     {
         readonly IEntityFactory _entityFactory;
         readonly GridUtils _gridUtils;
+        readonly GridTilemapRepresentation _gridLand;
 
-        public GridSpawningEngine(IEntityFactory entityFactory, GridUtils gridUtils)
+        public GridSpawningEngine(IEntityFactory entityFactory, GridUtils gridUtils, GridTilemapRepresentation gridLand)
         {
             _entityFactory = entityFactory;
             _gridUtils = gridUtils;
+            _gridLand = gridLand;
         }
 
         public EntitiesDB entitiesDB { get; set; }
@@ -25,21 +28,31 @@ namespace GreedyMerchants.ECS.Grid.Engines
         void CreateGridEntities()
         {
             var gridSize = _gridUtils.GetSize();
+            var gridInitializer = _entityFactory.BuildEntity<GridEntityDescriptor>(0, GridGroups.Grid);
+            var walkableGrid = NativeDynamicArray.Alloc<bool>(Allocator.Persistent, gridSize.x * gridSize.y);
+
             for (uint x = 0; x < gridSize.x; x++)
             {
                 for (uint y = 0; y < gridSize.y; y++)
                 {
                     var cellPosition = new uint2(x, y);
-                    var isLand = _gridUtils.IsLand(cellPosition);
+                    var cellIndex = _gridUtils.CellToEntityId(cellPosition);
+                    var isLand = _gridLand.IsLand(cellPosition);
+                    // note: it is probable that we don't need to create the land cells at all,
+                        // unless there is some gameplay feature that needs them.
                     var initializer = _entityFactory.BuildEntity<GridCellEntityDescriptor>(
-                        _gridUtils.CellToEntityId(cellPosition), isLand ? GridGroups.GridLandGroup : GridGroups.GridWaterNoCoinGroup
+                        cellIndex, isLand ? GridGroups.GridLandGroup : GridGroups.GridWaterNoCoinGroup
                     );
 
                     initializer.Init(new GridCellComponent {
                         Position = cellPosition, WorldCenter = _gridUtils.CellToCenterPosition(cellPosition)
                     });
+
+                    walkableGrid.Set(cellIndex, !isLand);
                 }
             }
+
+            gridInitializer.Init(new GridComponent { WalkableGrid = walkableGrid });
         }
     }
 }
