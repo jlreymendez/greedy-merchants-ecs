@@ -23,5 +23,7 @@ namespace GreedyMerchants.Data.Ship
         public float RespawnTransitionTime;
 
         public float BlinkAnimationTime = 0.15f;
+
+        public int CoinDrop = 7;
     }
 }

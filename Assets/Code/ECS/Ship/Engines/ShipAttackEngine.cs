@@ -16,6 +16,7 @@ namespace GreedyMerchants.ECS.Ship
         public ShipAttackEngine(IEntityStreamConsumerFactory consumerFactory, IEntityFunctions functions, ShipDefinition shipDefinition)
         {
             _consumer = consumerFactory.GenerateConsumer<ShipComponent>("ShipAttack", 20);
+            _coinDrops = shipDefinition.CoinDrop;
             _functions = functions;
         }
 
@@ -45,7 +46,7 @@ namespace GreedyMerchants.ECS.Ship
             var shipLevel = entitiesDB.QueryEntity<ShipLevelComponent>(ship.ID);
             var otherShipLevel = entitiesDB.QueryEntity<ShipLevelComponent>(ship.Collision.EntityId);
             ref var points = ref entitiesDB.QueryEntity<PointsComponent>(ship.ID);
-            ref var otherPoints = ref entitiesDB.QueryEntity<PointsComponent>(ship.ID);
+            ref var otherPoints = ref entitiesDB.QueryEntity<PointsComponent>(ship.Collision.EntityId);
 
             if (shipLevel.Level > otherShipLevel.Level)
             {
@@ -56,7 +57,7 @@ namespace GreedyMerchants.ECS.Ship
 
                 // Sunk the other ship.
                 // note: maybe this should be handled with a public entity change.
-                var targetGroup = ship.ID.groupID.SwapTag<SUNK_SHIP>();
+                var targetGroup = ship.Collision.EntityId.groupID.SwapTag<SUNK_SHIP>();
                 _functions.SwapEntityGroup<ShipEntityDescriptor>(ship.Collision.EntityId, targetGroup);
             }
         }
