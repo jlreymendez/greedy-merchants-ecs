@@ -51,10 +51,7 @@ namespace GreedyMerchants.ECS.Ship
         IEnumerator Tick()
         {
             // Register possible transitions.
-            GroupCompound<SHIP, AI, PIRATE>.BuildGroup.SetTagSwap<SHIP, SUNK_SHIP>(GroupCompound<SUNK_SHIP, AI, PIRATE>.BuildGroup);
-            GroupCompound<SHIP, AI, MERCHANT>.BuildGroup.SetTagSwap<SHIP, SUNK_SHIP>(GroupCompound<SUNK_SHIP, AI, MERCHANT>.BuildGroup);
-            GroupCompound<SHIP, AI, NORMAL>.BuildGroup.SetTagSwap<SHIP, SUNK_SHIP>(GroupCompound<SUNK_SHIP, AI, NORMAL>.BuildGroup);
-
+            GroupCompound<SHIP, AI>.BuildGroup.SetTagSwap<SHIP, SUNK_SHIP>(GroupCompound<SUNK_SHIP, AI>.BuildGroup);
             GroupCompound<SHIP, PLAYER>.BuildGroup.SetTagSwap<SHIP, SUNK_SHIP>(GroupCompound<SUNK_SHIP, PLAYER>.BuildGroup);
 
             yield return InitialSpawning();
@@ -84,7 +81,7 @@ namespace GreedyMerchants.ECS.Ship
             var (ship, implementors) =
                 _gameObjectFactory.BuildForEntity(_shipDefinition.Prefab.GetAsset<GameObject>(), spawn.position, spawn.rotation);
 
-            var group = control == ShipControl.Player ? ShipGroups.PlayerShip : ShipGroups.AiNormalShip;
+            var group = control == ShipControl.Player ? ShipGroups.PlayerShip : ShipGroups.AiShip;
             var shipInitializer = _entityFactory.BuildEntity<ShipEntityDescriptor>(id, group, implementors);
             shipInitializer.Init(new ShipComponent {
                 Speed = _shipDefinition.Speed,

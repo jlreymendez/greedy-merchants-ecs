@@ -76,8 +76,8 @@ namespace GreedyMerchants.ECS.AI
         void Process()
         {
             var grid = entitiesDB.QueryEntity<GridComponent>(0, GridGroups.Grid);
-            var (navigations, ships, count) = entitiesDB.QueryEntities<ShipNavigationComponent, ShipComponent>(ShipGroups.AiNormalShip);
-            var (targets, paths, _) = entitiesDB.QueryEntities<AiTarget, AiPath>(ShipGroups.AiNormalShip);
+            var (navigations, ships, count) = entitiesDB.QueryEntities<ShipNavigationComponent, ShipComponent>(ShipGroups.AiShip);
+            var (targets, paths, _) = entitiesDB.QueryEntities<AiTarget, AiPath>(ShipGroups.AiShip);
             for (var i = 0; i < count; i++)
             {
                 var navigation = navigations[i];

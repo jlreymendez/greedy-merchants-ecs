@@ -7,9 +7,7 @@ namespace GreedyMerchants.ECS.Ship
     {
         public static readonly ExclusiveGroupStruct PlayerShip = GroupCompound<SHIP, PLAYER>.BuildGroup;
 
-        public static readonly ExclusiveGroupStruct AiPirateShip = GroupCompound<SHIP, AI, MERCHANT>.BuildGroup;
-        public static readonly ExclusiveGroupStruct AiMerchantShip = GroupCompound<SHIP, AI, PIRATE>.BuildGroup;
-        public static readonly ExclusiveGroupStruct AiNormalShip = GroupCompound<SHIP, AI, NORMAL>.BuildGroup;
+        public static readonly ExclusiveGroupStruct AiShip = GroupCompound<SHIP, AI>.BuildGroup;
 
         public static readonly FasterReadOnlyList<ExclusiveGroupStruct> SunkShips = GroupTag<SUNK_SHIP>.Groups;
         public static readonly FasterReadOnlyList<ExclusiveGroupStruct> AliveShips = GroupTag<SHIP>.Groups;
@@ -23,8 +21,4 @@ namespace GreedyMerchants.ECS.Ship
 
     public class AI : GroupTag<AI> {}
     public class PLAYER : GroupTag<PLAYER> {}
-
-    public class PIRATE : GroupTag<PIRATE> {}
-    public class MERCHANT : GroupTag<MERCHANT> {}
-    public class NORMAL : GroupTag<NORMAL> {}
 }

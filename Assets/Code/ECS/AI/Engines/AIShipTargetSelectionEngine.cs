@@ -121,7 +121,7 @@ namespace GreedyMerchants.ECS.AI
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void UpdateTargetPositions()
         {
-            var (targets, count) = entitiesDB.QueryEntities<AiTarget>(ShipGroups.AiNormalShip);
+            var (targets, count) = entitiesDB.QueryEntities<AiTarget>(ShipGroups.AiShip);
             var shipViewsQuery = entitiesDB.QueryEntities<ShipViewComponent>(ShipGroups.AliveShips);
 
             for (var i = 0; i < count; i++)
