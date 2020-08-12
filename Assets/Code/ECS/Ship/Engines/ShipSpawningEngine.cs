@@ -73,7 +73,6 @@ namespace GreedyMerchants.ECS.Ship
 
             yield return loadTasks;
 
-            uint id = 0;
             for (var i = 0; i < _spawnPoints.Length; i++)
             {
                 Spawn((uint)i, _spawnPoints[i], i == 0 ? ShipControl.Player : ShipControl.Ai);

@@ -4,7 +4,7 @@ using GreedyMerchants.ECS.Player;
 using GreedyMerchants.ECS.Ship;
 using Svelto.ECS;
 
-namespace GreedyMerchants.ECS.Ai
+namespace GreedyMerchants.ECS.AI
 {
     public class ShipAIStateEngine : IQueryingEntitiesEngine
     {
@@ -21,13 +21,13 @@ namespace GreedyMerchants.ECS.Ai
 
         public void Ready()
         {
-            GroupCompound<SHIP, AI, MERCHANT>.BuildGroup.SetTagSwap<MERCHANT, NORMAL>(GroupCompound<SHIP, AI, NORMAL>.BuildGroup);
-            GroupCompound<SHIP, AI, MERCHANT>.BuildGroup.SetTagSwap<MERCHANT, PIRATE>(GroupCompound<SHIP, AI, PIRATE>.BuildGroup);
-            GroupCompound<SHIP, AI, MERCHANT>.BuildGroup.SetTagSwap<NORMAL, PIRATE>(GroupCompound<SHIP, AI, PIRATE>.BuildGroup);
+            GroupCompound<SHIP, Ship.AI, MERCHANT>.BuildGroup.SetTagSwap<MERCHANT, NORMAL>(GroupCompound<SHIP, Ship.AI, NORMAL>.BuildGroup);
+            GroupCompound<SHIP, Ship.AI, MERCHANT>.BuildGroup.SetTagSwap<MERCHANT, PIRATE>(GroupCompound<SHIP, Ship.AI, PIRATE>.BuildGroup);
+            GroupCompound<SHIP, Ship.AI, MERCHANT>.BuildGroup.SetTagSwap<NORMAL, PIRATE>(GroupCompound<SHIP, Ship.AI, PIRATE>.BuildGroup);
 
-            GroupCompound<SUNK_SHIP, AI, MERCHANT>.BuildGroup.SetTagSwap<MERCHANT, NORMAL>(GroupCompound<SUNK_SHIP, AI, NORMAL>.BuildGroup);
-            GroupCompound<SUNK_SHIP, AI, MERCHANT>.BuildGroup.SetTagSwap<MERCHANT, PIRATE>(GroupCompound<SUNK_SHIP, AI, PIRATE>.BuildGroup);
-            GroupCompound<SUNK_SHIP, AI, MERCHANT>.BuildGroup.SetTagSwap<NORMAL, PIRATE>(GroupCompound<SUNK_SHIP, AI, PIRATE>.BuildGroup);
+            GroupCompound<SUNK_SHIP, Ship.AI, MERCHANT>.BuildGroup.SetTagSwap<MERCHANT, NORMAL>(GroupCompound<SUNK_SHIP, Ship.AI, NORMAL>.BuildGroup);
+            GroupCompound<SUNK_SHIP, Ship.AI, MERCHANT>.BuildGroup.SetTagSwap<MERCHANT, PIRATE>(GroupCompound<SUNK_SHIP, Ship.AI, PIRATE>.BuildGroup);
+            GroupCompound<SUNK_SHIP, Ship.AI, MERCHANT>.BuildGroup.SetTagSwap<NORMAL, PIRATE>(GroupCompound<SUNK_SHIP, Ship.AI, PIRATE>.BuildGroup);
 
             Tick().Run();
         }
@@ -39,7 +39,7 @@ namespace GreedyMerchants.ECS.Ai
                 while (_consumer.TryDequeue(out ShipLevelComponent shipLevel, out EGID egid))
                 {
                     // note: Maybe it is better to add this as data, since the group tag contains check is potentially expensive.
-                    if (GroupTagExtensions.Contains<AI>(egid.groupID))
+                    if (GroupTagExtensions.Contains<Ship.AI>(egid.groupID))
                     {
                         var targetGroup = egid.groupID;
                         switch (shipLevel.Level)

@@ -43,6 +43,12 @@ namespace GreedyMerchants.ECS.Grid
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public uint2 EntityIdToCell(uint cellId)
+        {
+            return new uint2(cellId % _gridSize.x, cellId / _gridSize.x);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public float2 CellToCenterPosition(uint2 cellPosition)
         {
             return new float2(cellPosition.x, cellPosition.y) * _cellSize + _gridOffset + _cellSize * 0.5f;
@@ -65,38 +71,63 @@ namespace GreedyMerchants.ECS.Grid
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool TryGetUpCellId(uint2 cellPosition, out uint upCellId)
+        public uint GetCellCount()
+        {
+            return _gridSize.x * _gridSize.y;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool TryGetCellIdInDirection(uint cellId, uint direction, out uint neighbor)
+        {
+            neighbor = 0;
+            switch (direction)
+            {
+                case 0:
+                    return TryGetUpCellId(cellId, out neighbor);
+                case 1:
+                    return TryGetRightCellId(cellId, out neighbor);
+                case 2:
+                    return TryGetDownCellId(cellId, out neighbor);
+                case 3:
+                    return TryGetLeftCellId(cellId, out neighbor);
+            }
+
+            return false;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool TryGetUpCellId(uint cellId, out uint upCellId)
         {
             upCellId = 0;
-            if (cellPosition.y == _gridSize.y - 1) return false;
-            upCellId = CellToEntityId(cellPosition) + _gridSize.x;
+            if (cellId >= GetCellCount() - _gridSize.x) return false;
+            upCellId = cellId + _gridSize.x;
             return true;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool TryGetDownCellId(uint2 cellPosition, out uint upCellId)
+        public bool TryGetDownCellId(uint cellId, out uint upCellId)
         {
             upCellId = 0;
-            if (cellPosition.y == 0) return false;
-            upCellId = CellToEntityId(cellPosition) - _gridSize.x;
+            if (cellId < _gridSize.x) return false;
+            upCellId = cellId - _gridSize.x;
             return true;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool TryGetRightCellId(uint2 cellPosition, out uint upCellId)
+        public bool TryGetRightCellId(uint cellId, out uint upCellId)
         {
             upCellId = 0;
-            if (cellPosition.x == _gridSize.x - 1) return false;
-            upCellId = CellToEntityId(cellPosition) + 1;
+            if ((cellId % _gridSize.x) == _gridSize.x - 1) return false;
+            upCellId = cellId + 1;
             return true;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool TryGetLeftCellId(uint2 cellPosition, out uint upCellId)
+        public bool TryGetLeftCellId(uint cellId, out uint upCellId)
         {
             upCellId = 0;
-            if (cellPosition.x == 0) return false;
-            upCellId = CellToEntityId(cellPosition) - 1;
+            if ((cellId % _gridSize.x) == 0) return false;
+            upCellId = cellId - 1;
             return true;
         }
     }

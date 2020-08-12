@@ -11,12 +11,11 @@ namespace GreedyMerchants.ECS.Ship
         public static readonly ExclusiveGroupStruct AiMerchantShip = GroupCompound<SHIP, AI, PIRATE>.BuildGroup;
         public static readonly ExclusiveGroupStruct AiNormalShip = GroupCompound<SHIP, AI, NORMAL>.BuildGroup;
 
-        public static readonly ExclusiveGroupStruct SunkShip = GroupTag<SUNK_SHIP>.BuildGroup;
-
+        public static readonly FasterReadOnlyList<ExclusiveGroupStruct> SunkShips = GroupTag<SUNK_SHIP>.Groups;
         public static readonly FasterReadOnlyList<ExclusiveGroupStruct> AliveShips = GroupTag<SHIP>.Groups;
         public static readonly FasterReadOnlyList<ExclusiveGroupStruct> Ships = new FasterList<ExclusiveGroupStruct>()
             .AddRange(AliveShips)
-            .Add(SunkShip);
+            .AddRange(SunkShips);
     }
 
     public class SHIP : GroupTag<SHIP> {}

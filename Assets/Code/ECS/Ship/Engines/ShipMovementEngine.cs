@@ -104,11 +104,7 @@ namespace GreedyMerchants.ECS.Ship
 
                     // Update cell if needed.
                     var currentCell = _gridUtils.WorldToCellPosition(currentPosition.xy);
-                    if (currentCell.Equals(navigation.GridCell) == false)
-                    {
-                        navigation.GridCell = _gridUtils.WorldToCellPosition(currentPosition.xy);
-                        entitiesDB.PublishEntityChange<ShipNavigationComponent>(ship.ID);
-                    }
+                    navigation.GridCell = _gridUtils.WorldToCellPosition(currentPosition.xy);
                 }
             }
         }

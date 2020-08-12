@@ -7,6 +7,5 @@ namespace GreedyMerchants.ECS.Ship
     {
         public uint2 GridCell;
         public uint2 TargetGridCell;
-        public bool4 Neighbors;
     }
 }

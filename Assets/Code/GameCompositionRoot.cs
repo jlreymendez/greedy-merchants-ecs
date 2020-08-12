@@ -1,3 +1,4 @@
+﻿using GreedyMerchants.ECS.AI;
 using GreedyMerchants.ECS.Coin;
 using GreedyMerchants.ECS.Grid;
 using GreedyMerchants.ECS.Grid.Engines;
@@ -47,6 +48,7 @@ namespace GreedyMerchants
             AddShipEngines(context);
             AddPlayerEngines(context);
             AddCoinEngines(context);
+            AddAiEngines(context);
         }
 
         void AddGridEngines(GameContext context)
@@ -76,6 +78,12 @@ namespace GreedyMerchants
             _enginesRoot.AddEngine(new CoinSpawningEngine(_seed, context.CoinDefinition, _entityFactory, _gameObjectFactory, _entityFunctions, _time));
             _enginesRoot.AddEngine(new CoinAnimationEngine(_time));
             _enginesRoot.AddEngine(new CoinRecyclerEngine(_entityFunctions, _gridUtils));
+        }
+
+        void AddAiEngines(GameContext context)
+        {
+            _enginesRoot.AddEngine(new AIShipTargetSelectionEngine(_gridUtils));
+            _enginesRoot.AddEngine(new AIShipSteeringEngine(_entityConsumerFactory, _gridUtils));
         }
 
         public void OnContextDestroyed()
