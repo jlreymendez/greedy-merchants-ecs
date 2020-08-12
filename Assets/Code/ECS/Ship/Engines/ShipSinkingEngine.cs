@@ -11,7 +11,7 @@ namespace GreedyMerchants.ECS.Ship
 
         public void MovedTo(ref ShipViewComponent entityComponent, ExclusiveGroupStruct previousGroup, EGID egid)
         {
-            if (GroupTagExtensions.Contains<SUNK_SHIP>(egid.groupID))
+            if (GroupTagExtensions.Contains<SUNK>(egid.groupID))
             {
                 entityComponent.Renderer.Render = false;
                 entityComponent.Physics.Enable = false;

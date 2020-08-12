@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using GreedyMerchants.Data.Ship;
+using GreedyMerchants.ECS.AI;
 using GreedyMerchants.ECS.Common;
 using GreedyMerchants.ECS.Extensions.Svelto;
 using GreedyMerchants.ECS.Grid;
@@ -51,8 +52,8 @@ namespace GreedyMerchants.ECS.Ship
         IEnumerator Tick()
         {
             // Register possible transitions.
-            GroupCompound<SHIP, AI>.BuildGroup.SetTagSwap<SHIP, SUNK_SHIP>(GroupCompound<SUNK_SHIP, AI>.BuildGroup);
-            GroupCompound<SHIP, PLAYER>.BuildGroup.SetTagSwap<SHIP, SUNK_SHIP>(GroupCompound<SUNK_SHIP, PLAYER>.BuildGroup);
+            GroupCompound<AI_SHIP, AFLOAT>.BuildGroup.SetTagSwap<AFLOAT, SUNK>(GroupCompound<SUNK, AI_SHIP>.BuildGroup);
+            GroupCompound<PLAYER_SHIP, AFLOAT>.BuildGroup.SetTagSwap<AFLOAT, SUNK>(GroupCompound<SUNK, PLAYER_SHIP>.BuildGroup);
 
             yield return InitialSpawning();
         }
@@ -81,8 +82,16 @@ namespace GreedyMerchants.ECS.Ship
             var (ship, implementors) =
                 _gameObjectFactory.BuildForEntity(_shipDefinition.Prefab.GetAsset<GameObject>(), spawn.position, spawn.rotation);
 
-            var group = control == ShipControl.Player ? ShipGroups.PlayerShip : ShipGroups.AiShip;
-            var shipInitializer = _entityFactory.BuildEntity<ShipEntityDescriptor>(id, group, implementors);
+            EntityComponentInitializer shipInitializer;
+            if (control == ShipControl.Player)
+            {
+                shipInitializer = _entityFactory.BuildEntity<PlayerShipDescriptor>(id, PlayerGroups.PlayerShip, implementors);
+            }
+            else
+            {
+                shipInitializer = _entityFactory.BuildEntity<AiShipDescriptor>(id, AiGroups.AiShip, implementors);
+            }
+
             shipInitializer.Init(new ShipComponent {
                 Speed = _shipDefinition.Speed,
                 Direction = math.round(spawn.transform.right)
@@ -101,7 +110,7 @@ namespace GreedyMerchants.ECS.Ship
 
         public void MovedTo(ref ShipViewComponent shipView, ExclusiveGroupStruct previousGroup, EGID egid)
         {
-            if (GroupTagExtensions.Contains<SUNK_SHIP>(egid.groupID))
+            if (GroupTagExtensions.Contains<SUNK>(egid.groupID))
             {
                 Respawn(shipView, egid).Run();
             }
@@ -112,8 +121,16 @@ namespace GreedyMerchants.ECS.Ship
 
             Relocate(shipView, egid);
 
-            var targetGroup = egid.groupID.SwapTag<SHIP>();
-            _functions.SwapEntityGroup<ShipEntityDescriptor>(egid, targetGroup);
+            var targetGroup = egid.groupID.SwapTag<AFLOAT>();
+
+            if (GroupTagExtensions.Contains<PLAYER_SHIP>(egid.groupID))
+            {
+                _functions.SwapEntityGroup<PlayerShipDescriptor>(egid, targetGroup);
+            }
+            else
+            {
+                _functions.SwapEntityGroup<AiShipDescriptor>(egid, targetGroup);
+            }
 
             var render = false;
             while (_transitionWait.MoveNext())

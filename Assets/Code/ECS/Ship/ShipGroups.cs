@@ -5,20 +5,13 @@ namespace GreedyMerchants.ECS.Ship
 {
     public static class ShipGroups
     {
-        public static readonly ExclusiveGroupStruct PlayerShip = GroupCompound<SHIP, PLAYER>.BuildGroup;
-
-        public static readonly ExclusiveGroupStruct AiShip = GroupCompound<SHIP, AI>.BuildGroup;
-
-        public static readonly FasterReadOnlyList<ExclusiveGroupStruct> SunkShips = GroupTag<SUNK_SHIP>.Groups;
-        public static readonly FasterReadOnlyList<ExclusiveGroupStruct> AliveShips = GroupTag<SHIP>.Groups;
+        public static readonly FasterReadOnlyList<ExclusiveGroupStruct> SunkShips = GroupTag<SUNK>.Groups;
+        public static readonly FasterReadOnlyList<ExclusiveGroupStruct> AliveShips = GroupTag<AFLOAT>.Groups;
         public static readonly FasterReadOnlyList<ExclusiveGroupStruct> Ships = new FasterList<ExclusiveGroupStruct>()
             .AddRange(AliveShips)
             .AddRange(SunkShips);
     }
 
-    public class SHIP : GroupTag<SHIP> {}
-    public class SUNK_SHIP: GroupTag<SUNK_SHIP> {}
-
-    public class AI : GroupTag<AI> {}
-    public class PLAYER : GroupTag<PLAYER> {}
+    public class AFLOAT : GroupTag<AFLOAT> {}
+    public class SUNK : GroupTag<SUNK> {}
 }

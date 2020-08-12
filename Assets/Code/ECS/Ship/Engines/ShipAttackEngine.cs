@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using GreedyMerchants.Data.Ship;
+using GreedyMerchants.ECS.AI;
 using GreedyMerchants.ECS.Extensions.Svelto;
 using GreedyMerchants.ECS.Player;
 using Svelto.ECS;
@@ -59,9 +60,17 @@ namespace GreedyMerchants.ECS.Ship
                 otherPoints.Coins -= coinDrop;
 
                 // Sunk the other ship.
-                // note: maybe this should be handled with a public entity change.
-                var targetGroup = ship.Collision.EntityId.groupID.SwapTag<SUNK_SHIP>();
-                _functions.SwapEntityGroup<ShipEntityDescriptor>(ship.Collision.EntityId, targetGroup);
+                // note: This semi abstracted engine shouldn't know which descriptor it is changing.
+                    // This probably needs to be handled else where.
+                var targetGroup = ship.Collision.EntityId.groupID.SwapTag<SUNK>();
+                if (GroupTagExtensions.Contains<PLAYER_SHIP>(ship.Collision.EntityId.groupID))
+                {
+                    _functions.SwapEntityGroup<PlayerShipDescriptor>(ship.Collision.EntityId, targetGroup);
+                }
+                else
+                {
+                    _functions.SwapEntityGroup<AiShipDescriptor>(ship.Collision.EntityId, targetGroup);
+                }
             }
         }
     }

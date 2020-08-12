@@ -25,7 +25,7 @@ namespace GreedyMerchants.ECS.Player
         {
             while (true)
             {
-                var (ships, count) = entitiesDB.QueryEntities<ShipComponent>(ShipGroups.PlayerShip);
+                var (ships, count) = entitiesDB.QueryEntities<ShipComponent>(PlayerGroups.PlayerShip);
                 for (var i = 0; i < count; i++)
                 {
                     var direction = _input.GetDirection();

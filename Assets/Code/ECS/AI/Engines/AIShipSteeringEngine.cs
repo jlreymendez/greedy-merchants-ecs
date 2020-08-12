@@ -36,7 +36,7 @@ namespace GreedyMerchants.ECS.AI
 
         public void MovedTo(ref AiPath aiPath, ExclusiveGroupStruct previousGroup, EGID egid)
         {
-            if (GroupTagExtensions.Contains<SUNK_SHIP>(egid.groupID))
+            if (GroupTagExtensions.Contains<SUNK>(egid.groupID))
             {
                 aiPath.Waypoint = (uint)aiPath.Path.Count<uint>();
             }
@@ -76,8 +76,8 @@ namespace GreedyMerchants.ECS.AI
         void Process()
         {
             var grid = entitiesDB.QueryEntity<GridComponent>(0, GridGroups.Grid);
-            var (navigations, ships, count) = entitiesDB.QueryEntities<ShipNavigationComponent, ShipComponent>(ShipGroups.AiShip);
-            var (targets, paths, _) = entitiesDB.QueryEntities<AiTarget, AiPath>(ShipGroups.AiShip);
+            var (navigations, ships, count) = entitiesDB.QueryEntities<ShipNavigationComponent, ShipComponent>(AiGroups.AiShip);
+            var (targets, paths, _) = entitiesDB.QueryEntities<AiTarget, AiPath>(AiGroups.AiShip);
             for (var i = 0; i < count; i++)
             {
                 var navigation = navigations[i];

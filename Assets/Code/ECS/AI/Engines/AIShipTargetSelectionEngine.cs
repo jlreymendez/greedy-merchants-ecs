@@ -44,11 +44,11 @@ namespace GreedyMerchants.ECS.AI
 
         void FindAIShipTargets()
         {
-            var allShips = entitiesDB.QueryEntities<ShipLevelComponent, ShipViewComponent>(GroupTag<SHIP>.Groups).groups;
+            var allShips = entitiesDB.QueryEntities<ShipLevelComponent, ShipViewComponent>(GroupTag<AFLOAT>.Groups).groups;
             var allCoins = entitiesDB.QueryEntities<CoinViewComponent>(CoinGroups.SpawnedCoinsGroup);
 
             var aiShips = entitiesDB
-                .QueryEntities<AiTarget, ShipLevelComponent, ShipViewComponent>(GroupCompound<SHIP, Ship.AI>.Groups);
+                .QueryEntities<AiTarget, ShipLevelComponent, ShipViewComponent>(GroupCompound<AI_SHIP, AFLOAT>.Groups);
             foreach (var (targets, shipLevels, shipViews, count) in aiShips.groups)
             {
                 for (var i = 0; i < count; i++)
@@ -121,7 +121,7 @@ namespace GreedyMerchants.ECS.AI
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void UpdateTargetPositions()
         {
-            var (targets, count) = entitiesDB.QueryEntities<AiTarget>(ShipGroups.AiShip);
+            var (targets, count) = entitiesDB.QueryEntities<AiTarget>(AiGroups.AiShip);
             var shipViewsQuery = entitiesDB.QueryEntities<ShipViewComponent>(ShipGroups.AliveShips);
 
             for (var i = 0; i < count; i++)
@@ -129,7 +129,7 @@ namespace GreedyMerchants.ECS.AI
                 ref var target = ref targets[i];
                 var found = false;
                 if (entitiesDB.FindEGID(target.Locator, out var egid) == false) continue;
-                if (GroupTagExtensions.Contains<SHIP>(egid.groupID) == false) continue;
+                if (GroupTagExtensions.Contains<AFLOAT>(egid.groupID) == false) continue;
 
                 foreach (var (shipViews, shipCount) in shipViewsQuery.groups)
                 {
