@@ -41,7 +41,7 @@ namespace GreedyMerchants
 
             _time = new Time();
             _gameObjectFactory = new GameObjectFactory();
-            _gridUtils = new GridUtils(context.Grid, context.LandTilemap, context.GridDefinition);
+            _gridUtils = new GridUtils(context.GridDefinition);
             _seed = context.Seed == 0 ? (uint)Random.Range(int.MinValue, int.MinValue) : context.Seed;
 
             AddGridEngines(context);

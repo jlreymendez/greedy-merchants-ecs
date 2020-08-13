@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Runtime.CompilerServices;
 using GreedyMerchants.ECS.Extensions.Svelto;
 using GreedyMerchants.ECS.Grid;
@@ -123,44 +123,62 @@ namespace GreedyMerchants.ECS.AI
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void FindPath(ref AiPath path, uint2 current, uint2 target, GridComponent grid)
         {
-            var cellCount = _gridUtils.GetCellCount();
             var currentCell = _gridUtils.CellToEntityId(current);
             var targetCell = _gridUtils.CellToEntityId(target);
             // Prevent unnecessary calculations when target cell is not in a walkable path.
             if (grid.WalkableGrid.Get<bool>(targetCell) == false) return;
-            // Create a* data structures.
+
             var distance = (uint)math.ceil(math.distance(current, target));
-            var visitList = NativeDynamicArray.Alloc<uint>(Allocator.Temp, distance * 2);
-            var visitedList = NativeDynamicArray.Alloc<uint>(Allocator.Temp, distance * 2);
+            var cellCount = _gridUtils.GetCellCount();
             var pathGrid = NativeDynamicArray.Alloc<PathNode>(Allocator.Temp, cellCount);
 
-            visitList.Add(currentCell);
-            visitedList.Add(currentCell);
-            pathGrid.Set(currentCell, new PathNode { from = currentCell, length = 0 });
+            // Build path and get next cell if found.
+            if (AStarPath(grid, pathGrid, currentCell, targetCell, distance))
+            {
+                BuildPath(ref path, pathGrid, currentCell, targetCell);
+            }
+
+            pathGrid.Dispose();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        bool AStarPath(GridComponent grid, NativeDynamicArray pathGrid, uint current, uint target, uint distance)
+        {
+            // Create a* data structures.
+            var visitList = NativeDynamicArray.Alloc<uint>(Allocator.Temp, distance * 2);
+            var visitedList = NativeDynamicArray.Alloc<uint>(Allocator.Temp, distance * 2);
+
+            var targetPosition = _gridUtils.EntityIdToCell(target);
+
+            visitList.Add(current);
+            visitedList.Add(current);
+            pathGrid.Set(current, new PathNode { from = current, length = 0 });
             var foundPath = false;
             uint i = 0;
             while (i < visitList.Count<uint>())
             {
                 var cell = visitList.Get<uint>(i);
+                var cellPosition = _gridUtils.EntityIdToCell(cell);
                 var pathToCell = pathGrid.Get<PathNode>(cell);
-                // todo: add heuristics.
-                for (uint direction = 0; direction < 4; direction++)
+
+                var heuristics = BuildHeuristics(cellPosition, targetPosition);
+                while (heuristics.MoveNext())
                 {
-                    if (_gridUtils.TryGetCellIdInDirection(cell, direction, out var neighbor))
+                    if (_gridUtils.TryGetCellIdInDirection(cell, heuristics.Current, out var neighbor))
                     {
                         // Only consider walkable cells.
                         if (grid.WalkableGrid.Get<bool>(neighbor) == false) continue;
                         // Have we reach our target?
-                        if (neighbor == targetCell)
+                        if (neighbor == target)
                         {
-                            pathGrid.Set(neighbor, new PathNode { from = cell, length = pathToCell.length + 1});
+                            pathGrid.Set(neighbor, new PathNode(cell, pathToCell.length + 1));
                             foundPath = true;
                             break;
                         }
                         // Has this cell already been visited?
                         if (IsVisited(visitedList, neighbor) == false)
                         {
-                            pathGrid.Set(neighbor, new PathNode { from = cell, length = pathToCell.length + 1});
+                            pathGrid.Set(neighbor, new PathNode(cell, pathToCell.length + 1));
                             visitList.Add(neighbor);
                             visitedList.Add(neighbor);
                         }
@@ -172,28 +190,63 @@ namespace GreedyMerchants.ECS.AI
                 i++;
             }
 
-            // Build path and get next cell if found.
-            if (foundPath)
-            {
-                var nextCell = targetCell;
-                // Make sure we can store the path.
-                var pathToCell = pathGrid.Get<PathNode>(targetCell);
-                if (pathToCell.length > path.Path.Capacity<uint>())
-                {
-                    path.Path.Grow<uint>(pathToCell.length);
-                }
-
-                while (nextCell != currentCell)
-                {
-                    path.Path.Set(pathToCell.length - 1, nextCell);
-                    nextCell = pathToCell.from;
-                    pathToCell = pathGrid.Get<PathNode>(nextCell);
-                }
-            }
-            // Dispose all structures.
             visitList.Dispose();
             visitedList.Dispose();
-            pathGrid.Dispose();
+
+            return foundPath;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        PathHeuristics BuildHeuristics(uint2 current, uint2 target)
+        {
+            PathHeuristics heuristics;
+            var direction = (int2) (target - current);
+            if (direction.x > 0 && direction.y >= 0)
+            {
+                if (direction.y >= 0)
+                {
+                    heuristics = new PathHeuristics(GridDirection.Right, false);
+                }
+                else
+                {
+                    heuristics = new PathHeuristics(GridDirection.Right, true);
+                }
+            }
+            else if (direction.x < 0)
+            {
+                if (direction.y >= 0)
+                {
+                    heuristics = new PathHeuristics(GridDirection.Left, true);
+                }
+                else
+                {
+                    heuristics = new PathHeuristics(GridDirection.Left, false);
+                }
+            }
+            else if (direction.y > 0)
+            {
+                if (direction.x >= 0)
+                {
+                    heuristics = new PathHeuristics(GridDirection.Up, true);
+                }
+                else
+                {
+                    heuristics = new PathHeuristics(GridDirection.Up, false);
+                }
+            }
+            else
+            {
+                if (direction.x >= 0)
+                {
+                    heuristics = new PathHeuristics(GridDirection.Down, false);
+                }
+                else
+                {
+                    heuristics = new PathHeuristics(GridDirection.Down, true);
+                }
+            }
+
+            return heuristics;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -207,11 +260,24 @@ namespace GreedyMerchants.ECS.AI
 
             return false;
         }
-    }
 
-    struct PathNode
-    {
-        public uint from;
-        public uint length;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        void BuildPath(ref AiPath path, NativeDynamicArray pathGrid, uint current, uint target)
+        {
+            var nextCell = target;
+            // Make sure we can store the path.
+            var pathToCell = pathGrid.Get<PathNode>(target);
+            if (pathToCell.length > path.Path.Capacity<uint>())
+            {
+                path.Path.Grow<uint>(pathToCell.length);
+            }
+
+            while (nextCell != current)
+            {
+                path.Path.Set(pathToCell.length - 1, nextCell);
+                nextCell = pathToCell.from;
+                pathToCell = pathGrid.Get<PathNode>(nextCell);
+            }
+        }
     }
 }

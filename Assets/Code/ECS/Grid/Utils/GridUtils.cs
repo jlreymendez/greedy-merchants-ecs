@@ -1,8 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 using GreedyMerchants.Data.Grid;
-using Svelto.ECS;
 using Unity.Mathematics;
-using UnityEngine;
 using UnityEngine.Tilemaps;
 using UGrid = UnityEngine.Grid;
 
@@ -10,18 +8,14 @@ namespace GreedyMerchants.ECS.Grid
 {
     public class GridUtils
     {
-        readonly UGrid _grid;
-        readonly Tilemap _landTileMap;
         readonly uint2 _gridSize;
         readonly float2 _cellSize;
         readonly float2 _gridOffset;
 
-        public GridUtils(UGrid grid, Tilemap landTilemap, GridDefinition definition)
+        public GridUtils(GridDefinition definition)
         {
             _gridSize = definition.Size;
             _cellSize = definition.CellSize;
-            _grid = grid;
-            _landTileMap = landTilemap;
             _gridOffset = _gridSize * _cellSize * -0.5f;
         }
 
@@ -77,18 +71,18 @@ namespace GreedyMerchants.ECS.Grid
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool TryGetCellIdInDirection(uint cellId, uint direction, out uint neighbor)
+        public bool TryGetCellIdInDirection(uint cellId, GridDirection direction, out uint neighbor)
         {
             neighbor = 0;
             switch (direction)
             {
-                case 0:
+                case GridDirection.Up:
                     return TryGetUpCellId(cellId, out neighbor);
-                case 1:
+                case GridDirection.Right:
                     return TryGetRightCellId(cellId, out neighbor);
-                case 2:
+                case GridDirection.Down:
                     return TryGetDownCellId(cellId, out neighbor);
-                case 3:
+                case GridDirection.Left:
                     return TryGetLeftCellId(cellId, out neighbor);
             }
 
