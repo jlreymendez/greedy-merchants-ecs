@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Runtime.CompilerServices;
 using GreedyMerchants.ECS.Extensions.Svelto;
 using GreedyMerchants.ECS.Grid;
@@ -130,9 +130,9 @@ namespace GreedyMerchants.ECS.AI
             if (grid.WalkableGrid.Get<bool>(targetCell) == false) return;
             // Create a* data structures.
             var distance = (uint)math.ceil(math.distance(current, target));
-            var visitList = NativeDynamicArray.Alloc<uint>(Allocator.TempJob, distance * 2);
-            var visitedList = NativeDynamicArray.Alloc<uint>(Allocator.TempJob, distance * 2);
-            var pathGrid = NativeDynamicArray.Alloc<PathNode>(Allocator.TempJob, cellCount);
+            var visitList = NativeDynamicArray.Alloc<uint>(Allocator.Temp, distance * 2);
+            var visitedList = NativeDynamicArray.Alloc<uint>(Allocator.Temp, distance * 2);
+            var pathGrid = NativeDynamicArray.Alloc<PathNode>(Allocator.Temp, cellCount);
 
             visitList.Add(currentCell);
             visitedList.Add(currentCell);
