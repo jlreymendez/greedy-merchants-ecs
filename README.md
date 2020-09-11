@@ -4,7 +4,7 @@ Greedy merchants is a game we developed for the Ludum Dare 40 with a couple of f
 
 ## Getting Started
 
-Since this project is using Svelto.ECS 3.0 which is not yet available through openupm I decided to use git submodules to handle Svelto dependencies. In order for this dependencies to be loaded into the project you need to run the following command `git submodule update`.
+Since this project is using Svelto.ECS 3.0 which is not yet available through openupm I decided to use git submodules to handle Svelto dependencies. In order for this dependencies to be loaded into the project you need to run the following command `git submodule update --init --recursive`.
 
 ## Original Credits
 
