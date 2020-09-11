@@ -51,9 +51,7 @@
       "name": "package.openupm.com",
       "url": "https://package.openupm.com",
       "scopes": [
-        "com.openupm",
-        "com.sebaslab.svelto.common",
-        "com.sebaslab.svelto.tasks"
+        "com.openupm"
       ]
     }
   ]
