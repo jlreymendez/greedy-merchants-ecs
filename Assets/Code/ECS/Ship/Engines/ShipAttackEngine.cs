@@ -46,6 +46,7 @@ namespace GreedyMerchants.ECS.Ship
         {
             // Make sure collision still exists, might have been sunk by another ship.
             if (entitiesDB.Exists<ShipComponent>(ship.Collision.EntityId) == false) return;
+            if (entitiesDB.Exists<ShipComponent>(ship.ID) == false) return;
 
             var shipLevel = entitiesDB.QueryEntity<ShipLevelComponent>(ship.ID);
             ref var points = ref entitiesDB.QueryEntity<PointsComponent>(ship.ID);
