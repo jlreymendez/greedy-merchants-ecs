@@ -67,6 +67,8 @@ namespace GreedyMerchants.ECS.AI
         {
             while (_consumer.TryDequeue(out var target, out var egid))
             {
+                if (entitiesDB.Exists<AiPath>(egid) == false) continue;
+
                 ref var path = ref entitiesDB.QueryEntity<AiPath>(egid);
                 path.Waypoint = (uint)path.Path.Count<uint>();
             }
