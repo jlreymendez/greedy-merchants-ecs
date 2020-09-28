@@ -1,9 +1,10 @@
 ﻿using GreedyMerchants.Data.Audio;
+using Svelto.ECS.Hybrid;
 using UnityEngine;
 
 namespace GreedyMerchants.ECS.Ship
 {
-    public class ShipAudioImplementor : MonoBehaviour, IShipAudioComponent
+    public class ShipAudioImplementor : MonoBehaviour, IImplementor, IShipAudioComponent
     {
         public AudioClip SinkClip;
         public AudioClip CoinPickClip;
