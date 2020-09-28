@@ -1,5 +1,8 @@
 ﻿using System.Collections;
+using GreedyMerchants.Data.Audio;
 using GreedyMerchants.ECS.Coin;
+using GreedyMerchants.ECS.Extensions.Svelto;
+using GreedyMerchants.ECS.Player;
 using Svelto.ECS;
 using UnityEngine;
 
@@ -40,11 +43,18 @@ namespace GreedyMerchants.ECS.Ship
         {
             ref var coin = ref entitiesDB.QueryEntity<CoinComponent>(ship.Collision.EntityId);
 
-            if (coin.Picked == false)
+            // Coin may have been picked by another ship on the same frame.
+            if (coin.Picked) return;
+
+            coin.Picked = true;
+            ref var points = ref entitiesDB.QueryEntity<PointsComponent>(ship.ID);
+            points.Coins++;
+
+            // For players only play coin pickup clip
+            if (GroupTagExtensions.Contains<PLAYER_SHIP>(ship.ID.groupID))
             {
-                coin.Picked = true;
-                ref var points = ref entitiesDB.QueryEntity<PointsComponent>(ship.ID);
-                points.Coins++;
+                ref var shipView = ref entitiesDB.QueryEntity<ShipViewComponent>(ship.ID);
+                shipView.Audio.PlayOneShot = ShipAudioType.CoinPick;
             }
         }
     }

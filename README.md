@@ -25,3 +25,4 @@ Since this project is using Svelto.ECS 3.0 which is not yet available through op
 * "Cannonball Hitting Ship" by [EFlexMusic](https://freesound.org/s/388527/)
 * "Coins" by [DWOBoyle](https://freesound.org/s/140382/)
 * "Arr" by [bart](https://opengameart.org/content/arr)
+* "Coin Clatter 4" by [FenrirFangs](https://freesound.org/s/213978/)
