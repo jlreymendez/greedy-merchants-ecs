@@ -17,3 +17,8 @@ Since this project is using Svelto.ECS 3.0 which is not yet available through op
 ### Art
 
 * All art was done by Kenney. Check his [stuff out](https://www.kenney.nl/assets).
+
+### Audio
+
+* "Happy Pirate Accordion" (Original by [alphatone](https://freesound.org/people/alphatone/sounds/385876/), Faster version by [Timbre](https://freesound.org/people/Timbre/sounds/385882/))
+* "Pirate Ship at Bay" by [CGEffex](https://freesound.org/people/CGEffex/sounds/93678/)
