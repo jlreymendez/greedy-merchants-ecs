@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: -2302082589224109593}
   - component: {fileID: 8971593366637735188}
   - component: {fileID: 5180118086337776214}
+  - component: {fileID: 5367315522846116556}
   m_Layer: 9
   m_Name: Ship
   m_TagString: Untagged
@@ -148,6 +149,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a0da0ed476841fc931a47f72b470f55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5367315522846116556
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1544998397928983576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f7dd3c397f14301b407ac014bdddae2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SinkClip: {fileID: 0}
+  CoinPickClip: {fileID: 0}
+  PirateCueClip: {fileID: 0}
+  MerchantCueClip: {fileID: 0}
 --- !u!1 &1544998398003020043
 GameObject:
   m_ObjectHideFlags: 0
