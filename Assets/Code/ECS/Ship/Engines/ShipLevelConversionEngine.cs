@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using GreedyMerchants.Data.Audio;
 using GreedyMerchants.Data.Ship;
 using Svelto.ECS;
 using Svelto.Tasks.Enumerators;
@@ -119,9 +120,22 @@ namespace GreedyMerchants.ECS.Ship
             {
                 for (var i = 0; i < count; i++)
                 {
+                    var changed = shipLevels[i].Level != shipLevels[i].NextLevel;
                     shipLevels[i].Level = shipLevels[i].NextLevel;
                     ships[i].Speed = _speedsByLevel[(int) shipLevels[i].Level];
                     shipViews[i].Renderer.Sprite = (int) shipLevels[i].Level;
+
+                    if (changed)
+                    {
+                        if (shipLevels[i].Level == ShipLevel.Pirate)
+                        {
+                            shipViews[i].Audio.PlayOneShot = ShipAudioType.PirateCue;
+                        }
+                        else if (shipLevels[i].Level == ShipLevel.Merchant)
+                        {
+                            shipViews[i].Audio.PlayOneShot = ShipAudioType.MerchantCue;
+                        }
+                    }
                 }
             }
         }

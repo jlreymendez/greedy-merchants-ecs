@@ -261,8 +261,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SinkClip: {fileID: 8300000, guid: 7c7fd63b76aef9f498d1ac8bfd65c92f, type: 3}
   CoinPickClip: {fileID: 0}
-  PirateCueClip: {fileID: 0}
-  MerchantCueClip: {fileID: 0}
+  PirateCueClip: {fileID: 8300000, guid: 058af233101dfc1418f88fa0e72cc008, type: 3}
+  MerchantCueClip: {fileID: 8300000, guid: d0070ec9e2083ff4ba2450c1047a8cc1, type: 3}
 --- !u!1 &1544998398003020043
 GameObject:
   m_ObjectHideFlags: 0
