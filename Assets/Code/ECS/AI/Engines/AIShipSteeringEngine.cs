@@ -109,15 +109,19 @@ namespace GreedyMerchants.ECS.AI
                 var nextCell = _gridUtils.EntityIdToCell(waypoint);
                 if (nextCell.Equals(navigation.GridCell) == false)
                 {
-                    ship.Direction = new float3(math.sign((int2)nextCell - (int2)navigation.GridCell), 0);
-
-                    // note: this is here to catch a bug where it is possible to have a waypoint that isn't a neighbor.
-                        // this might happen in edge cases causing the ship to move diagonally for a few frames.
-                    var absDirection = math.abs(ship.Direction);
-                    if (absDirection.x > 0 && absDirection.y > 0)
+                    var direction = (int2)math.sign((int2)nextCell - (int2) navigation.GridCell);
+                    // In some edge cases we might have moved from the supposed current cell and now we are two cells
+                    // away from our waypoint, when turning this might cause diagonal movement so we solve it here.
+                    if (math.length(direction) > 1)
                     {
-                        ship.Direction.y = 0;
+                        var fixedDirection = direction * math.abs(ship.Direction);
+                        // Make sure new direction is valid otherwise ai will get stuck.
+                        waypoint = _gridUtils.CellToEntityId((uint2)((int2)navigation.GridCell - fixedDirection));
+                        direction = grid.WalkableGrid.Get<bool>(waypoint) ?
+                            fixedDirection :
+                            direction * math.abs(ship.Direction.yx);
                     }
+                    ship.Direction = direction;
                 }
             }
         }

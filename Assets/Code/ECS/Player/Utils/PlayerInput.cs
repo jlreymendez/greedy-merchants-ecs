@@ -5,9 +5,9 @@ namespace GreedyMerchants.ECS.Player
 {
     public class PlayerInput
     {
-        public float3 GetDirection()
+        public int2 GetDirection()
         {
-            return new float3(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), 0);
+            return new int2((int)math.round(Input.GetAxisRaw("Horizontal")), (int)math.round(Input.GetAxisRaw("Vertical")));
         }
     }
 }

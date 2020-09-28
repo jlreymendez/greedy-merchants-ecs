@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using GreedyMerchants.ECS.Grid;
 using GreedyMerchants.ECS.Unity;
-using GreedyMerchants.ECS.Extensions.Svelto;
 using Svelto.ECS;
 using Unity.Mathematics;
 
@@ -55,7 +54,7 @@ namespace GreedyMerchants.ECS.Ship
                     ref var view = ref views[i];
 
                     // Update direction.
-                    var right = math.round(view.Transform.Right);
+                    var right = new int2(math.round(view.Transform.Right).xy);
                     var currentPosition = view.Transform.Position;
                     var isTurning = math.abs(math.dot(right, ship.Direction)) < MinDistance;
                     var cellCenter = new float3(_gridUtils.CellToCenterPosition(navigation.GridCell), 0);
@@ -64,7 +63,7 @@ namespace GreedyMerchants.ECS.Ship
                         // Ship is turning (only rotate if we are at the center of a tile.
                         if (math.distance(cellCenter, currentPosition) < MinDistance)
                         {
-                            right = math.round(ship.Direction);
+                            right = ship.Direction;
                             currentPosition = cellCenter;
                             isTurning = false;
                         }
@@ -72,14 +71,14 @@ namespace GreedyMerchants.ECS.Ship
                     else
                     {
                         // Ship is either keeping its direction or turning 180 degrees.
-                        right = math.round(ship.Direction);
+                        right = ship.Direction;
                     }
 
                     // Select target cell, if we are turning we might want to turn in the current cell.
                     navigation.TargetGridCell = navigation.GridCell + (uint2)math.sign(right).xy;
                     if (isTurning)
                     {
-                        var directionToCenter = math.sign(cellCenter - currentPosition);
+                        var directionToCenter = new int2(math.sign(cellCenter - currentPosition).xy);
                         if (right.Equals(directionToCenter))
                         {
                             navigation.TargetGridCell = navigation.GridCell;
@@ -99,11 +98,10 @@ namespace GreedyMerchants.ECS.Ship
                     var advanceDistance = ship.Speed * _time.DeltaTime;
 
                     // Update view.
-                    view.Transform.Position = currentPosition + right * (distanceToTarget < advanceDistance ? distanceToTarget : advanceDistance);
-                    view.Transform.Right = right;
+                    view.Transform.Right = new float3(right, 0);
+                    view.Transform.Position = currentPosition + view.Transform.Right * (distanceToTarget < advanceDistance ? distanceToTarget : advanceDistance);
 
                     // Update cell if needed.
-                    var currentCell = _gridUtils.WorldToCellPosition(currentPosition.xy);
                     navigation.GridCell = _gridUtils.WorldToCellPosition(currentPosition.xy);
                 }
             }

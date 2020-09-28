@@ -6,7 +6,7 @@ namespace GreedyMerchants.ECS.Ship
     public struct ShipComponent : IEntityComponent, INeedEGID
     {
         public float Speed;
-        public float3 Direction;
+        public int2 Direction;
 
         public ShipCollisionData Collision;
         public EGID ID { get; set; }

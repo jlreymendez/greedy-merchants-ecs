@@ -94,7 +94,7 @@ namespace GreedyMerchants.ECS.Ship
 
             shipInitializer.Init(new ShipComponent {
                 Speed = _shipDefinition.Speed,
-                Direction = math.round(spawn.transform.right)
+                Direction = new int2(math.round(spawn.transform.right).xy)
             });
             shipInitializer.Init(new ShipLevelComponent() { Level =  ShipLevel.Normal });
 

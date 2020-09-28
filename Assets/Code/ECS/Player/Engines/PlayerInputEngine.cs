@@ -28,15 +28,14 @@ namespace GreedyMerchants.ECS.Player
                 var (ships, count) = entitiesDB.QueryEntities<ShipComponent>(PlayerGroups.PlayerShip);
                 for (var i = 0; i < count; i++)
                 {
+                    // todo: this doesn't handle multiple input controllers.
                     var direction = _input.GetDirection();
-                    if (direction.x != 0)
+                    // Limit user input to one axis.
+                    direction = direction.x != 0 ? new int2(direction.x, 0) : new int2(0, direction.y);
+                    // Ship should never have int2.zero as its direction
+                    if (math.length(direction) > 0)
                     {
-                        ships[i].Direction = new float3(direction.x, 0, 0);
-                    }
-
-                    if (direction.y != 0)
-                    {
-                        ships[i].Direction = new float3(0, direction.y, 0);
+                        ships[i].Direction = direction;
                     }
                 }
 
