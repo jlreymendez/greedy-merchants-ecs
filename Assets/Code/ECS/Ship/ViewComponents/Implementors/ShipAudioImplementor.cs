@@ -6,12 +6,10 @@ namespace GreedyMerchants.ECS.Ship
 {
     public class ShipAudioImplementor : MonoBehaviour, IImplementor, IShipAudioComponent
     {
-        public AudioClip SinkClip;
-        public AudioClip CoinPickClip;
-        public AudioClip PirateCueClip;
-        public AudioClip MerchantCueClip;
-
-        AudioSource _audioSource;
+        public AudioSource SinkClip;
+        public AudioSource CoinPickClip;
+        public AudioSource PirateCueClip;
+        public AudioSource MerchantCueClip;
 
         public ShipAudioType PlayOneShot
         {
@@ -20,28 +18,19 @@ namespace GreedyMerchants.ECS.Ship
                 switch (value)
                 {
                     case ShipAudioType.Sink:
-                        _audioSource.clip = SinkClip;
-                        _audioSource.Play();
+                        SinkClip.Play();
                         break;
                     case ShipAudioType.CoinPick:
-                        _audioSource.clip = CoinPickClip;
-                        _audioSource.Play();
+                        CoinPickClip.Play();
                         break;
                     case ShipAudioType.PirateCue:
-                        _audioSource.clip = PirateCueClip;
-                        _audioSource.Play();
+                        PirateCueClip.Play();
                         break;
                     case ShipAudioType.MerchantCue:
-                        _audioSource.clip = MerchantCueClip;
-                        _audioSource.Play();
+                        MerchantCueClip.Play();
                         break;
                 }
             }
-        }
-
-        void Awake()
-        {
-            _audioSource = GetComponent<AudioSource>();
         }
     }
 }

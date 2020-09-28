@@ -2,9 +2,9 @@
 {
     public enum ShipAudioType
     {
-        Sink,
         CoinPick,
+        MerchantCue,
         PirateCue,
-        MerchantCue
+        Sink,
     }
 }
