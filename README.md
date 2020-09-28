@@ -20,5 +20,6 @@ Since this project is using Svelto.ECS 3.0 which is not yet available through op
 
 ### Audio
 
-* "Happy Pirate Accordion" (Original by [alphatone](https://freesound.org/people/alphatone/sounds/385876/), Faster version by [Timbre](https://freesound.org/people/Timbre/sounds/385882/))
-* "Pirate Ship at Bay" by [CGEffex](https://freesound.org/people/CGEffex/sounds/93678/)
+* "Happy Pirate Accordion" (Original by [alphatone](https://freesound.org/s/385876/), Faster version by [Timbre](https://freesound.org/s/385882/))
+* "Pirate Ship at Bay" by [CGEffex](https://freesound.org/s/93678/)
+* "Cannonball Hitting Ship" by [EFlexMusic](https://freesound.org/s/388527/)
