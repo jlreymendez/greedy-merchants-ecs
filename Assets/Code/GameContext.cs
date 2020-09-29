@@ -4,6 +4,7 @@ using GreedyMerchants.Data.Ship;
 using Svelto.Context;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
 
 namespace GreedyMerchants
@@ -28,6 +29,6 @@ namespace GreedyMerchants
 
         [Header("Coin")] public CoinDefinition CoinDefinition;
 
-        [Header("HUD")] public AssetReference HudScene;
+        [Header("HUD")] public AssetReference PointsHUDCanvas;
     }
 }

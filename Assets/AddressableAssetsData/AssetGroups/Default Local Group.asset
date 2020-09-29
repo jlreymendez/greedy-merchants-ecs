@@ -27,8 +27,8 @@ MonoBehaviour:
     m_Address: BlueShip
     m_ReadOnly: 0
     m_SerializedLabels: []
-    m_MainAsset: {fileID: 0}
-    m_TargetAsset: {fileID: 0}
+    m_MainAsset: {fileID: 2800000, guid: 2cbd83b6bef9b864f9deb1248e837c75, type: 3}
+    m_TargetAsset: {fileID: 2800000, guid: 2cbd83b6bef9b864f9deb1248e837c75, type: 3}
   - m_GUID: 2e92d128b817e73469c6722f370aeb46
     m_Address: PirateShip
     m_ReadOnly: 0
@@ -41,6 +41,12 @@ MonoBehaviour:
     m_SerializedLabels: []
     m_MainAsset: {fileID: 0}
     m_TargetAsset: {fileID: 0}
+  - m_GUID: 57fb1e8717091f941aa51518711ab6c1
+    m_Address: ShipPointsHUD
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_MainAsset: {fileID: 0}
+    m_TargetAsset: {fileID: 0}
   - m_GUID: 62d384bdb439de34bb0665a228bb37aa
     m_Address: GreenShip
     m_ReadOnly: 0
@@ -49,12 +55,6 @@ MonoBehaviour:
     m_TargetAsset: {fileID: 0}
   - m_GUID: 805a625898056084c8fb5a775d6be6ed
     m_Address: CoinPrefab
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    m_MainAsset: {fileID: 0}
-    m_TargetAsset: {fileID: 0}
-  - m_GUID: 9de6cd91650b21d46bde56d8351e9c54
-    m_Address: HUD.unity
     m_ReadOnly: 0
     m_SerializedLabels: []
     m_MainAsset: {fileID: 0}

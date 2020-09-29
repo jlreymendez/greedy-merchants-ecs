@@ -8,24 +8,29 @@ namespace GreedyMerchants.ECS.Ship
 {
     public class ShipPointsHudImplementor : MonoBehaviour, IImplementor, IShipPointsHudComponent
     {
-        GameObject[] _huds;
-        Image _icon;
+        GameObject _huds;
+        Text[] _texts = new Text[0];
         Text _text;
+        int _index;
 
         public ShipColor Color
         {
             set
             {
-                var index = (int) value;
-                if (_huds.Length <= index)
+                if (_huds == null)
                 {
-                    _icon = null;
+                    _huds = GameObject.FindGameObjectWithTag(PointHUDTag);
+                    if (_huds) _texts = _huds.GetComponentsInChildren<Text>();
+                }
+
+                var index = (int) value;
+                if (_texts.Length <= index)
+                {
                     _text = null;
                 }
                 else
                 {
-                    _icon = _huds[index].GetComponentInChildren<Image>();
-                    _text = _huds[index].GetComponentInChildren<Text>();
+                    _text = _texts[index].GetComponentInChildren<Text>();
                 }
             }
         }
@@ -36,11 +41,6 @@ namespace GreedyMerchants.ECS.Ship
             {
                 if (_text != null) _text.text = value.ToString();
             }
-        }
-
-        void Start()
-        {
-            _huds = GameObject.FindGameObjectsWithTag(PointHUDTag);
         }
 
         const string PointHUDTag = "PointsHUD";

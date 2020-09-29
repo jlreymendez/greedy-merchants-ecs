@@ -1,27 +1,35 @@
 ﻿using System.Collections;
+using GreedyMerchants.ECS.Extensions.Svelto;
+using GreedyMerchants.ECS.Unity.Extensions;
 using Svelto.ECS;
 using Svelto.ECS.Experimental;
+using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace GreedyMerchants.ECS.Ship
 {
     public class ShipHudUpdatingEngine : IQueryingEntitiesEngine
     {
+        readonly AssetReference _pointsCanvasReference;
+        WaitForEntitiesInGroupEnumerator<ShipComponent> _shipSpawnWait;
+
+        public ShipHudUpdatingEngine(AssetReference pointsCanvasReference)
+        {
+            _pointsCanvasReference = pointsCanvasReference;
+        }
+
         public EntitiesDB entitiesDB { get; set; }
+
         public void Ready()
         {
+            _shipSpawnWait = new WaitForEntitiesInGroupEnumerator<ShipComponent>(ShipGroups.Ships, entitiesDB);
             Tick().Run();
         }
 
         public IEnumerator Tick()
         {
-            // Wait for ships to get spawned to reset values.
-            while (true)
-            {
-                var groups = new QueryGroups(ShipGroups.Ships).WithAny<ShipComponent>(entitiesDB);
-                if (groups.result.count > 0) break;
-                yield return null;
-            }
-
+            yield return SpawnPointsHud();
+            yield return _shipSpawnWait;
             InitialSetup();
 
             while (true)
@@ -29,6 +37,16 @@ namespace GreedyMerchants.ECS.Ship
                 Process();
                 yield return null;
             }
+        }
+
+        IEnumerator SpawnPointsHud()
+        {
+            if (string.IsNullOrEmpty(_pointsCanvasReference.AssetGUID)) yield break;
+            yield return _pointsCanvasReference.LoadAssetTask<GameObject>();
+
+            if (_pointsCanvasReference.Asset == null) yield break;
+
+            GameObject.Instantiate(_pointsCanvasReference.Asset);
         }
 
         void InitialSetup()

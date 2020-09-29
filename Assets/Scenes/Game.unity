@@ -417,8 +417,8 @@ MonoBehaviour:
   Grid: {fileID: 1383516658}
   LandTilemap: {fileID: 1028290381}
   CoinDefinition: {fileID: 11400000, guid: 76cd90359d4dfdd4fbd7ea17b5313342, type: 2}
-  HudScene:
-    m_AssetGUID: 9de6cd91650b21d46bde56d8351e9c54
+  PointsHUDCanvas:
+    m_AssetGUID: 57fb1e8717091f941aa51518711ab6c1
     m_SubObjectName: 
 --- !u!1 &797258996
 GameObject:
