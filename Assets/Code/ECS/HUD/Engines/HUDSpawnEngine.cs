@@ -17,7 +17,7 @@ namespace GreedyMerchants.ECS.HUD
 
         public async void Ready()
         {
-            if (_sceneReference == null) return;
+            if (string.IsNullOrEmpty(_sceneReference.AssetGUID)) return;
             var result = _sceneReference.LoadSceneAsync(LoadSceneMode.Additive);
             await result.Task;
         }
