@@ -132,6 +132,8 @@ namespace GreedyMerchants.ECS.Ship
                 _functions.SwapEntityGroup<AiShipDescriptor>(egid, targetGroup);
             }
 
+            shipView.UI.Visibility = true;
+
             var render = false;
             while (_transitionWait.MoveNext())
             {

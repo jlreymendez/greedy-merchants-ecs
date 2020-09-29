@@ -16,6 +16,11 @@ namespace GreedyMerchants.ECS.Ship
             set => _text.text = value.ToString();
         }
 
+        public bool Visibility
+        {
+            set => _canvas.gameObject.SetActive(value);
+        }
+
         void Awake()
         {
             _canvas = GetComponentInChildren<Canvas>();

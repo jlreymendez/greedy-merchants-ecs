@@ -3,5 +3,6 @@
     public interface IShipCoinUIComponent
     {
         int Coins { set; }
+        bool Visibility { set; }
     }
 }

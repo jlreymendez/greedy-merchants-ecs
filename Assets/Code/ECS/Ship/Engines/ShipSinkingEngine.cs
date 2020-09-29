@@ -18,6 +18,7 @@ namespace GreedyMerchants.ECS.Ship
                 entityComponent.Physics.Enable = false;
                 entityComponent.Explosion.Play = true;
                 entityComponent.Audio.PlayOneShot = ShipAudioType.Sink;
+                entityComponent.UI.Visibility = false;
             }
             else
             {
