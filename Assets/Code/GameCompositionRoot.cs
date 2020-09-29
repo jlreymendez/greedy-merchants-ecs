@@ -2,6 +2,7 @@
 using GreedyMerchants.ECS.Coin;
 using GreedyMerchants.ECS.Grid;
 using GreedyMerchants.ECS.Grid.Engines;
+using GreedyMerchants.ECS.Match.Engines;
 using GreedyMerchants.ECS.Player;
 using GreedyMerchants.ECS.Ship;
 using GreedyMerchants.ECS.Unity;
@@ -44,7 +45,7 @@ namespace GreedyMerchants
             _gridUtils = new GridUtils(context.GridDefinition);
             _seed = context.Seed == 0 ? (uint)Random.Range(int.MinValue, int.MinValue) : context.Seed;
 
-            AddHUDEngines(context);
+            AddMatchEngines(context);
             AddGridEngines(context);
             AddShipEngines(context);
             AddPlayerEngines(context);
@@ -52,9 +53,9 @@ namespace GreedyMerchants
             AddAiEngines(context);
         }
 
-        void AddHUDEngines(GameContext context)
+        void AddMatchEngines(GameContext context)
         {
-            // _enginesRoot.AddEngine(new HUDSpawnEngine(context.HudScene));
+            _enginesRoot.AddEngine(new MatchTimeCountingEngine(_entityFactory, _gameObjectFactory, context.TimerHUDCanvas, _time, context.MatchTime));
         }
 
         void AddGridEngines(GameContext context)

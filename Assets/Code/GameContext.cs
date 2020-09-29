@@ -14,7 +14,7 @@ namespace GreedyMerchants
         [Header("Random")]
         public uint Seed;
 
-        [Header("Game Config")]
+        [Header("Match Config")] public float MatchTime;
         public int PointsPerCoin;
         public int PointsPerKill;
 
@@ -30,5 +30,6 @@ namespace GreedyMerchants
         [Header("Coin")] public CoinDefinition CoinDefinition;
 
         [Header("HUD")] public AssetReference PointsHUDCanvas;
+        public AssetReference TimerHUDCanvas;
     }
 }

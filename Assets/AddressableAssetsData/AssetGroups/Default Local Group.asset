@@ -59,6 +59,12 @@ MonoBehaviour:
     m_SerializedLabels: []
     m_MainAsset: {fileID: 0}
     m_TargetAsset: {fileID: 0}
+  - m_GUID: ba278f14a88629e4db1672ed85c0535d
+    m_Address: TimerHUDPrefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_MainAsset: {fileID: 0}
+    m_TargetAsset: {fileID: 0}
   - m_GUID: e562d7e4f971d6b4480c37599ff3fef3
     m_Address: YellowShip
     m_ReadOnly: 0
