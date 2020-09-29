@@ -43,7 +43,7 @@ namespace GreedyMerchants.ECS.Ship
         void ProcessNextLevelSelection()
         {
             var shipQuery =
-                entitiesDB.QueryEntities<ShipLevelComponent, PointsComponent>(ShipGroups.Ships);
+                entitiesDB.QueryEntities<ShipLevelComponent, PointsComponent>(ShipGroups.AliveShips);
             var invalidEgid = new EGID();
             var pirateEgid = invalidEgid;
             var merchantEgid = invalidEgid;
