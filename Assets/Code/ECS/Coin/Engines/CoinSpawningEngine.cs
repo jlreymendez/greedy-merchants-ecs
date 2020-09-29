@@ -63,9 +63,7 @@ namespace GreedyMerchants.ECS.Coin
             }
             else
             {
-                coinView.Renderer.Render = true;
-                coinView.Renderer.Sprite = 0;
-                coinView.Physics.Enable = true;
+                EnableCoin(coinView).Run();
             }
         }
 
@@ -129,6 +127,19 @@ namespace GreedyMerchants.ECS.Coin
                 var (coin, implementors) = _gameObjectFactory.BuildForEntity(prefab);
                 var initializer = _entityFactory.BuildEntity<CoinEntityDescriptor>(i, CoinGroups.RecycledCoinsGroup, implementors);
             }
+        }
+
+        IEnumerator EnableCoin(CoinViewComponent coinView)
+        {
+            coinView.Renderer.Render = true;
+            coinView.Renderer.Sprite = 0;
+            var time = 0.5f;
+            while (time > 0)
+            {
+                time -= _time.DeltaTime;
+                yield return null;
+            }
+            coinView.Physics.Enable = true;
         }
     }
 }
