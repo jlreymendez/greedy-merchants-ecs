@@ -12,6 +12,7 @@ namespace GreedyMerchants.ECS.Ship
         public IShipExplosionComponent Explosion;
         public IShipTriggerComponent Trigger;
         public IShipAudioComponent Audio;
+        public IShipCoinUIComponent UI;
 
         public EGID ID { get; set; }
     }

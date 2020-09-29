@@ -50,10 +50,12 @@ namespace GreedyMerchants.ECS.Ship
             ref var points = ref entitiesDB.QueryEntity<PointsComponent>(ship.ID);
             points.Coins++;
 
+            ref var shipView = ref entitiesDB.QueryEntity<ShipViewComponent>(ship.ID);
+            shipView.UI.Coins = points.Coins;
+
             // For players only play coin pickup clip
             if (GroupTagExtensions.Contains<PLAYER_SHIP>(ship.ID.groupID))
             {
-                ref var shipView = ref entitiesDB.QueryEntity<ShipViewComponent>(ship.ID);
                 shipView.Audio.PlayOneShot = ShipAudioType.CoinPick;
             }
         }
