@@ -93,6 +93,7 @@ namespace GreedyMerchants.ECS.Ship
             }
 
             shipInitializer.Init(new ShipComponent {
+                Color = (ShipColor)id,
                 Speed = _shipDefinition.Speed,
                 Direction = new int2(math.round(spawn.transform.right).xy)
             });
@@ -132,7 +133,7 @@ namespace GreedyMerchants.ECS.Ship
                 _functions.SwapEntityGroup<AiShipDescriptor>(egid, targetGroup);
             }
 
-            shipView.UI.Visibility = true;
+            shipView.CoinsHud.Visibility = true;
 
             var render = false;
             while (_transitionWait.MoveNext())

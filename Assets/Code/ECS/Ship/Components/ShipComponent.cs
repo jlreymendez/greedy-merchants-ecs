@@ -1,10 +1,12 @@
-﻿using Svelto.ECS;
+﻿using GreedyMerchants.Data.Ship;
+using Svelto.ECS;
 using Unity.Mathematics;
 
 namespace GreedyMerchants.ECS.Ship
 {
     public struct ShipComponent : IEntityComponent, INeedEGID
     {
+        public ShipColor Color;
         public float Speed;
         public int2 Direction;
 

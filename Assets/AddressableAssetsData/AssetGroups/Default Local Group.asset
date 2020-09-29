@@ -53,6 +53,12 @@ MonoBehaviour:
     m_SerializedLabels: []
     m_MainAsset: {fileID: 0}
     m_TargetAsset: {fileID: 0}
+  - m_GUID: 9de6cd91650b21d46bde56d8351e9c54
+    m_Address: HUD.unity
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_MainAsset: {fileID: 0}
+    m_TargetAsset: {fileID: 0}
   - m_GUID: e562d7e4f971d6b4480c37599ff3fef3
     m_Address: YellowShip
     m_ReadOnly: 0

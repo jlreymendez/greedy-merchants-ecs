@@ -1,6 +1,6 @@
 ﻿namespace GreedyMerchants.ECS.Ship
 {
-    public interface IShipCoinUIComponent
+    public interface IShipCoinsHudComponent
     {
         int Coins { set; }
         bool Visibility { set; }

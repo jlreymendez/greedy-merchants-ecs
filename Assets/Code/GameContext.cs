@@ -3,6 +3,7 @@ using GreedyMerchants.Data.Grid;
 using GreedyMerchants.Data.Ship;
 using Svelto.Context;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.Tilemaps;
 
 namespace GreedyMerchants
@@ -11,6 +12,10 @@ namespace GreedyMerchants
     {
         [Header("Random")]
         public uint Seed;
+
+        [Header("Game Config")]
+        public int PointsPerCoin;
+        public int PointsPerKill;
 
         [Header("Ship")]
         public ShipDefinition Ship;
@@ -22,5 +27,7 @@ namespace GreedyMerchants
         public Tilemap LandTilemap;
 
         [Header("Coin")] public CoinDefinition CoinDefinition;
+
+        [Header("HUD")] public AssetReference HudScene;
     }
 }

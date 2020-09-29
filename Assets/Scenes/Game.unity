@@ -405,6 +405,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Seed: 0
+  PointsPerCoin: 1
+  PointsPerKill: 10
   Ship: {fileID: 11400000, guid: d02f7b42ced514c4bb0e22a72dfe620f, type: 2}
   ShipSpawns:
   - {fileID: 93071303}
@@ -415,6 +417,9 @@ MonoBehaviour:
   Grid: {fileID: 1383516658}
   LandTilemap: {fileID: 1028290381}
   CoinDefinition: {fileID: 11400000, guid: 76cd90359d4dfdd4fbd7ea17b5313342, type: 2}
+  HudScene:
+    m_AssetGUID: 9de6cd91650b21d46bde56d8351e9c54
+    m_SubObjectName: 
 --- !u!1 &797258996
 GameObject:
   m_ObjectHideFlags: 0

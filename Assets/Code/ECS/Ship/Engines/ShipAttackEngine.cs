@@ -58,6 +58,7 @@ namespace GreedyMerchants.ECS.Ship
                 // Steal some coins from it.
                 var coinDrop = math.min(otherPoints.Coins, _coinDrops);
                 points.Coins += coinDrop;
+                points.ShipsSunk++;
                 otherPoints.Coins -= coinDrop;
 
                 // Sunk the other ship.

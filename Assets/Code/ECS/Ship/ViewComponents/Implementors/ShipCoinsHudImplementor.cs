@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace GreedyMerchants.ECS.Ship
 {
-    public class ShipCoinUIImplementor : MonoBehaviour, IImplementor, IShipCoinUIComponent
+    public class ShipCoinsHudImplementor : MonoBehaviour, IImplementor, IShipCoinsHudComponent
     {
         Canvas _canvas;
         Text _text;

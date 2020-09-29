@@ -2,6 +2,7 @@
 using GreedyMerchants.ECS.Coin;
 using GreedyMerchants.ECS.Grid;
 using GreedyMerchants.ECS.Grid.Engines;
+using GreedyMerchants.ECS.HUD;
 using GreedyMerchants.ECS.Player;
 using GreedyMerchants.ECS.Ship;
 using GreedyMerchants.ECS.Unity;
@@ -44,11 +45,17 @@ namespace GreedyMerchants
             _gridUtils = new GridUtils(context.GridDefinition);
             _seed = context.Seed == 0 ? (uint)Random.Range(int.MinValue, int.MinValue) : context.Seed;
 
+            AddHUDEngines(context);
             AddGridEngines(context);
             AddShipEngines(context);
             AddPlayerEngines(context);
             AddCoinEngines(context);
             AddAiEngines(context);
+        }
+
+        void AddHUDEngines(GameContext context)
+        {
+            _enginesRoot.AddEngine(new HUDSpawnEngine(context.HudScene));
         }
 
         void AddGridEngines(GameContext context)
@@ -66,6 +73,8 @@ namespace GreedyMerchants
             _enginesRoot.AddEngine(new ShipAttackEngine(_entityConsumerFactory, _entityFunctions, context.Ship));
             _enginesRoot.AddEngine(new ShipSinkingEngine());
             _enginesRoot.AddEngine(new ShipLevelConversionEngine(context.Ship));
+            _enginesRoot.AddEngine(new ShipPointsAwardingEngine(context.PointsPerCoin, context.PointsPerKill));
+            _enginesRoot.AddEngine(new ShipHudUpdatingEngine());
         }
 
         void AddPlayerEngines(GameContext context)
