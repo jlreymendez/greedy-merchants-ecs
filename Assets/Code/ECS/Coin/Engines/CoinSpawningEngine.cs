@@ -133,12 +133,7 @@ namespace GreedyMerchants.ECS.Coin
         {
             coinView.Renderer.Render = true;
             coinView.Renderer.Sprite = 0;
-            var time = 0.5f;
-            while (time > 0)
-            {
-                time -= _time.DeltaTime;
-                yield return null;
-            }
+            yield return new WaitForSecondsEnumerator(0.5f);
             coinView.Physics.Enable = true;
         }
     }
