@@ -1,14 +1,15 @@
 ﻿using GreedyMerchants.ECS.AI;
 using GreedyMerchants.ECS.Coin;
+using GreedyMerchants.ECS.Extensions.Svelto;
 using GreedyMerchants.ECS.Grid;
 using GreedyMerchants.ECS.Grid.Engines;
 using GreedyMerchants.ECS.Match.Engines;
 using GreedyMerchants.ECS.Player;
 using GreedyMerchants.ECS.Ship;
 using GreedyMerchants.ECS.Unity;
+using GreedyMerchants.Unity;
 using Svelto.Context;
 using Svelto.ECS;
-using Svelto.ECS.Schedulers.Unity;
 using Svelto.Tasks;
 using UnityEngine;
 using Time = GreedyMerchants.ECS.Unity.Time;
@@ -17,7 +18,7 @@ namespace GreedyMerchants
 {
     public class GameCompositionRoot : ICompositionRoot
     {
-        UnityEntitiesSubmissionScheduler _scheduler;
+        GameRunner _runner;
         EnginesRoot _enginesRoot;
         IEntityFactory _entityFactory;
         IEntityFunctions _entityFunctions;
@@ -34,8 +35,8 @@ namespace GreedyMerchants
 
         void CompositionRoot(GameContext context)
         {
-            _scheduler = new UnityEntitiesSubmissionScheduler();
-            _enginesRoot = new EnginesRoot(_scheduler);
+            _runner = new GameRunner();
+            _enginesRoot = new EnginesRoot(_runner.SubmissionScheduler);
             _entityFactory = _enginesRoot.GenerateEntityFactory();
             _entityFunctions = _enginesRoot.GenerateEntityFunctions();
             _entityConsumerFactory = _enginesRoot.GenerateConsumerFactory();
@@ -51,48 +52,59 @@ namespace GreedyMerchants
             AddPlayerEngines(context);
             AddCoinEngines(context);
             AddAiEngines(context);
+
+            _runner.Play();
         }
 
         void AddMatchEngines(GameContext context)
         {
-            _enginesRoot.AddEngine(new MatchTimeCountingEngine(_entityFactory, _gameObjectFactory, context.TimerHUDCanvas, _time, context.MatchTime));
+            AddEngine(new MatchTimeCountingEngine(_runner, _entityFactory, _gameObjectFactory, context.TimerHUDCanvas, context.MatchTime));
         }
 
         void AddGridEngines(GameContext context)
         {
             var gridLand = new GridTilemapRepresentation(context.Grid, context.LandTilemap, _gridUtils);
-            _enginesRoot.AddEngine(new GridSpawningEngine(_entityFactory, _gridUtils, gridLand));
+            AddEngine(new GridSpawningEngine(_entityFactory, _gridUtils, gridLand));
         }
 
         void AddShipEngines(GameContext context)
         {
-            _enginesRoot.AddEngine(new ShipSpawningEngine(_seed, _entityFactory, _entityFunctions, _gameObjectFactory, context.ShipSpawns, context.Ship));
-            _enginesRoot.AddEngine(new ShipMovementEngine(_time, _gridUtils));
-            _enginesRoot.AddEngine(new ShipCollisionsEngine());
-            _enginesRoot.AddEngine(new ShipCoinPickupEngine(_entityConsumerFactory));
-            _enginesRoot.AddEngine(new ShipAttackEngine(_entityConsumerFactory, _entityFunctions, context.Ship));
-            _enginesRoot.AddEngine(new ShipSinkingEngine());
-            _enginesRoot.AddEngine(new ShipLevelConversionEngine(context.Ship));
-            _enginesRoot.AddEngine(new ShipPointsAwardingEngine(context.PointsPerCoin, context.PointsPerKill));
-            _enginesRoot.AddEngine(new ShipHudUpdatingEngine(context.PointsHUDCanvas));
+            AddEngine(new ShipSpawningEngine(_seed, _entityFactory, _entityFunctions, _gameObjectFactory, context.ShipSpawns, context.Ship));
+            AddEngine(new ShipMovementEngine(_time, _gridUtils));
+            AddEngine(new ShipCollisionsEngine());
+            AddEngine(new ShipCoinPickupEngine(_entityConsumerFactory));
+            AddEngine(new ShipAttackEngine(_entityConsumerFactory, _entityFunctions, context.Ship));
+            AddEngine(new ShipSinkingEngine());
+            AddEngine(new ShipLevelConversionEngine(context.Ship));
+            AddEngine(new ShipPointsAwardingEngine(context.PointsPerCoin, context.PointsPerKill));
+            AddEngine(new ShipHudUpdatingEngine(context.PointsHUDCanvas));
         }
 
         void AddPlayerEngines(GameContext context)
         {
-            _enginesRoot.AddEngine(new PlayerInputEngine(new PlayerInput()));
+            AddEngine(new PlayerInputEngine(new PlayerInput()));
         }
 
         void AddCoinEngines(GameContext context)
         {
-            _enginesRoot.AddEngine(new CoinSpawningEngine(_seed, context.CoinDefinition, _entityFactory, _gameObjectFactory, _entityFunctions, _time));
-            _enginesRoot.AddEngine(new CoinAnimationEngine(_time));
-            _enginesRoot.AddEngine(new CoinRecyclerEngine(_entityFunctions, _gridUtils));
+            AddEngine(new CoinSpawningEngine(_seed, context.CoinDefinition, _entityFactory, _gameObjectFactory, _entityFunctions, _time));
+            AddEngine(new CoinAnimationEngine(_time));
+            AddEngine(new CoinRecyclerEngine(_entityFunctions, _gridUtils));
         }
 
         void AddAiEngines(GameContext context)
         {
-            _enginesRoot.AddEngine(new AIShipTargetSelectionEngine(_gridUtils));
-            _enginesRoot.AddEngine(new AIShipSteeringEngine(_entityConsumerFactory, _gridUtils));
+            AddEngine(new AIShipTargetSelectionEngine(_gridUtils));
+            AddEngine(new AIShipSteeringEngine(_entityConsumerFactory, _gridUtils));
+        }
+
+        void AddEngine(IEngine engine)
+        {
+            _enginesRoot.AddEngine(engine);
+            if (engine is ITickingEngine)
+            {
+                _runner.AddTickEngine(engine as ITickingEngine);
+            }
         }
 
         public void OnContextDestroyed()
