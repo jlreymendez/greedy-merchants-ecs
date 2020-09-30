@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections;
-using System.Diagnostics;
 using GreedyMerchants.ECS.Extensions.Svelto;
 using GreedyMerchants.ECS.Unity;
-using Svelto.DataStructures;
+using GreedyMerchants.Unity;
 using Svelto.ECS;
 using Unity.Mathematics;
 using UnityEngine;
@@ -11,20 +10,22 @@ using UnityEngine.AddressableAssets;
 
 namespace GreedyMerchants.ECS.Match.Engines
 {
-    public class MatchTimeCountingEngine : IQueryingEntitiesEngine
+    public class MatchTimeCountingEngine : IQueryingEntitiesEngine, ITickingEngine
     {
         IEntityFactory _factory;
         GameObjectFactory _gameObjectFactory;
         AssetReference _timerHudReference;
+        GameRunner _runner;
         ITime _time;
         float _initialTimer;
 
-        public MatchTimeCountingEngine(IEntityFactory factory, GameObjectFactory gameObjectFactory, AssetReference timerHudReference, ITime time, float initialTimer)
+        public MatchTimeCountingEngine(GameRunner runner, IEntityFactory factory, GameObjectFactory gameObjectFactory, AssetReference timerHudReference, float initialTimer)
         {
             _factory = factory;
             _gameObjectFactory = gameObjectFactory;
             _timerHudReference = timerHudReference;
-            _time = time;
+            _runner = runner;
+            _time = runner.Time;
             _initialTimer = initialTimer;
         }
 
@@ -37,11 +38,12 @@ namespace GreedyMerchants.ECS.Match.Engines
             {
                 await _timerHudReference.LoadAssetAsync<GameObject>().Task;
             }
-
-            Tick().Run();
         }
 
-        IEnumerator Tick()
+        public GameTickScheduler tickScheduler => GameTickScheduler.Early;
+        public int Order => (int) GameEngineOrder.Logic;
+
+        public IEnumerator Tick()
         {
             // Create entity.
             var (go, implementors) = _gameObjectFactory.BuildForEntity(_timerHudReference.Asset as GameObject);
@@ -57,7 +59,7 @@ namespace GreedyMerchants.ECS.Match.Engines
                 yield return null;
             }
 
-            _time.TimeScale = 0;
+            _runner.Pause();
         }
 
         bool Process()
