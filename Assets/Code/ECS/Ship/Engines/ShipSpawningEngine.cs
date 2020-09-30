@@ -45,17 +45,21 @@ namespace GreedyMerchants.ECS.Ship
 
         public EntitiesDB entitiesDB { get; set; }
 
-        public void Ready() { }
+        public void Ready()
+        {
+            // Register possible transitions.
+            // bug: Building group compounds outside of static class ShipGroups may cause the groups list to be empty.
+                // Move to Tick to see the problem.
+            // todo: Change this
+            GroupCompound<AI_SHIP, AFLOAT>.BuildGroup.SetTagSwap<AFLOAT, SUNK>(GroupCompound<SUNK, AI_SHIP>.BuildGroup);
+            GroupCompound<PLAYER_SHIP, AFLOAT>.BuildGroup.SetTagSwap<AFLOAT, SUNK>(GroupCompound<SUNK, PLAYER_SHIP>.BuildGroup);
+        }
 
         public GameTickScheduler tickScheduler => GameTickScheduler.Early;
         public int Order => (int) GameEngineOrder.Init;
 
         public IEnumerator Tick()
         {
-            // Register possible transitions.
-            GroupCompound<AI_SHIP, AFLOAT>.BuildGroup.SetTagSwap<AFLOAT, SUNK>(GroupCompound<SUNK, AI_SHIP>.BuildGroup);
-            GroupCompound<PLAYER_SHIP, AFLOAT>.BuildGroup.SetTagSwap<AFLOAT, SUNK>(GroupCompound<SUNK, PLAYER_SHIP>.BuildGroup);
-
             yield return InitialSpawning();
         }
 
