@@ -62,13 +62,13 @@ namespace GreedyMerchants.Unity
 
         void OrderedInsert(FasterList<ITickingEngine> list, ITickingEngine engine)
         {
-            uint i = 0;
+            int i = 0;
             for (; i < list.count; i++)
             {
                 if (list[i].Order >= engine.Order) break;
             }
 
-            list.AddAt(i, engine);
+            list.Insert(i, engine);
         }
 
         void Run(FasterList<ITickingEngine> list, IRunner<IEnumerator> scheduler)
