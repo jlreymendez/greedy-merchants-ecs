@@ -12,11 +12,13 @@ namespace GreedyMerchants.ECS.Ship
     {
         public EGID EntityId;
         public int Layer;
+        public float Time;
 
-        public ShipCollisionData(EGID Id, int layer)
+        public ShipCollisionData(EGID id, int layer, float time)
         {
-            EntityId = Id;
+            EntityId = id;
             Layer = layer;
+            Time = time;
         }
     }
 }

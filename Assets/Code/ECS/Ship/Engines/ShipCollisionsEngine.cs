@@ -18,7 +18,11 @@ namespace GreedyMerchants.ECS.Ship
 
         void OnCollision(EGID sender, ShipCollisionData collisionData)
         {
-            entitiesDB.QueryEntity<ShipComponent>(sender).Collision = collisionData;
+            ref var ship = ref entitiesDB.QueryEntity<ShipComponent>(sender);
+            if (ship.Collision.Time < collisionData.Time)
+            {
+                ship.Collision = collisionData;
+            }
             entitiesDB.PublishEntityChange<ShipComponent>(sender);
         }
 
