@@ -23,7 +23,6 @@ namespace GreedyMerchants
         IEntityFactory _entityFactory;
         IEntityFunctions _entityFunctions;
         IEntityStreamConsumerFactory _entityConsumerFactory;
-        Time _time;
         GameObjectFactory _gameObjectFactory;
         GridUtils _gridUtils;
         uint _seed;
@@ -41,7 +40,6 @@ namespace GreedyMerchants
             _entityFunctions = _enginesRoot.GenerateEntityFunctions();
             _entityConsumerFactory = _enginesRoot.GenerateConsumerFactory();
 
-            _time = new Time();
             _gameObjectFactory = new GameObjectFactory();
             _gridUtils = new GridUtils(context.GridDefinition);
             _seed = context.Seed == 0 ? (uint)Random.Range(int.MinValue, int.MinValue) : context.Seed;
@@ -70,8 +68,8 @@ namespace GreedyMerchants
         void AddShipEngines(GameContext context)
         {
             AddEngine(new ShipSpawningEngine(_seed, _entityFactory, _entityFunctions, _gameObjectFactory, context.ShipSpawns, context.Ship));
-            AddEngine(new ShipMovementEngine(_time, _gridUtils));
-            AddEngine(new ShipCollisionsEngine());
+            AddEngine(new ShipMovementEngine(_runner.Time, _gridUtils));
+            AddEngine(new ShipCollisionsEngine(_runner.Time));
             AddEngine(new ShipCoinPickupEngine(_entityConsumerFactory));
             AddEngine(new ShipAttackEngine(_entityConsumerFactory, _entityFunctions, context.Ship));
             AddEngine(new ShipSinkingEngine());
@@ -87,8 +85,8 @@ namespace GreedyMerchants
 
         void AddCoinEngines(GameContext context)
         {
-            AddEngine(new CoinSpawningEngine(_seed, context.CoinDefinition, _entityFactory, _gameObjectFactory, _entityFunctions, _time));
-            AddEngine(new CoinAnimationEngine(_time));
+            AddEngine(new CoinSpawningEngine(_seed, context.CoinDefinition, _entityFactory, _gameObjectFactory, _entityFunctions, _runner.Time));
+            AddEngine(new CoinAnimationEngine(_runner.Time));
             AddEngine(new CoinRecyclerEngine(_entityFunctions, _gridUtils));
         }
 

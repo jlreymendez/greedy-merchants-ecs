@@ -26,7 +26,7 @@ namespace GreedyMerchants.ECS.Ship
         public void Ready() { }
 
         public GameTickScheduler tickScheduler => GameTickScheduler.Update;
-        public int Order => (int) GameEngineOrder.Physics;
+        public int Order => (int) GameEngineOrder.Logic;
 
         public IEnumerator Tick()
         {
