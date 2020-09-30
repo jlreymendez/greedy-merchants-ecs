@@ -10,6 +10,12 @@ namespace GreedyMerchants.ECS.Extensions.Svelto
         readonly FasterReadOnlyList<ExclusiveGroupStruct> _groups;
         readonly EntitiesDB _entitiesDB;
 
+        public WaitForEntitiesInGroupEnumerator(ExclusiveGroupStruct group, EntitiesDB entitiesDB)
+        {
+            var groups = new FasterList<ExclusiveGroupStruct>(new [] { group });
+            _groups = new FasterReadOnlyList<ExclusiveGroupStruct>(groups);
+            _entitiesDB = entitiesDB;
+        }
 
         public WaitForEntitiesInGroupEnumerator(FasterReadOnlyList<ExclusiveGroupStruct> groups, EntitiesDB entitiesDB)
         {
@@ -24,8 +30,6 @@ namespace GreedyMerchants.ECS.Extensions.Svelto
         }
 
         public void Reset() { }
-
-        public void Reset(float seconds) { }
 
         public object Current => null;
     }
