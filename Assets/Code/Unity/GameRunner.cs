@@ -13,7 +13,6 @@ namespace GreedyMerchants.Unity
         FasterList<ITickingEngine> _earlyTickingEngines = new FasterList<ITickingEngine>();
         FasterList<ITickingEngine> _tickingEngines = new FasterList<ITickingEngine>();
         FasterList<ITickingEngine> _lateTickingEngines = new FasterList<ITickingEngine>();
-        bool _paused;
         bool _playing;
         IEntitiesSubmissionScheduler _scheduler;
         ITime _time;
@@ -26,14 +25,12 @@ namespace GreedyMerchants.Unity
 
         public void Pause()
         {
-            _paused = true;
-            StandardSchedulers.updateScheduler.isPaused = true;
-            StandardSchedulers.lateScheduler.isPaused = true;
+            SetPause(true);
         }
 
         public void Resume()
         {
-            _paused = false;
+            SetPause(false);
         }
 
         public void Play()
@@ -59,6 +56,12 @@ namespace GreedyMerchants.Unity
 
         public IEntitiesSubmissionScheduler SubmissionScheduler => _scheduler;
         public ITime Time => _time;
+
+        void SetPause(bool pause)
+        {
+            StandardSchedulers.updateScheduler.isPaused = pause;
+            StandardSchedulers.lateScheduler.isPaused = pause;
+        }
 
         void OrderedInsert(FasterList<ITickingEngine> list, ITickingEngine engine)
         {
