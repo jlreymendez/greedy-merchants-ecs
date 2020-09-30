@@ -78,13 +78,13 @@ namespace GreedyMerchants.ECS.Ship
                 }
             }
 
-            if (pirateEgid.Equals(invalidEgid) == false)
+            if (GroupTagExtensions.Contains<AFLOAT>(pirateEgid.groupID))
             {
                 ref var level = ref entitiesDB.QueryEntity<ShipLevelComponent>(pirateEgid);
                 level.NextLevel = ShipLevel.Pirate;
             }
 
-            if (merchantEgid.Equals(invalidEgid) == false)
+            if (GroupTagExtensions.Contains<AFLOAT>(merchantEgid.groupID))
             {
                 ref var level = ref entitiesDB.QueryEntity<ShipLevelComponent>(merchantEgid);
                 level.NextLevel = ShipLevel.Merchant;
