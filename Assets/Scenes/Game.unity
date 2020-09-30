@@ -405,7 +405,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Seed: 0
-  MatchTime: 10
+  MatchTime: 120
   PointsPerCoin: 1
   PointsPerKill: 10
   Ship: {fileID: 11400000, guid: d02f7b42ced514c4bb0e22a72dfe620f, type: 2}
