@@ -3,12 +3,13 @@ using GreedyMerchants.Data.Ship;
 using GreedyMerchants.ECS.AI;
 using GreedyMerchants.ECS.Extensions.Svelto;
 using GreedyMerchants.ECS.Player;
+using GreedyMerchants.Unity;
 using Svelto.ECS;
 using Unity.Mathematics;
 
 namespace GreedyMerchants.ECS.Ship
 {
-    public class ShipAttackEngine : IQueryingEntitiesEngine
+    public class ShipAttackEngine : IQueryingEntitiesEngine, ITickingEngine
     {
         readonly int _coinDrops;
         readonly IEntityFunctions _functions;
@@ -22,13 +23,12 @@ namespace GreedyMerchants.ECS.Ship
         }
 
         public EntitiesDB entitiesDB { get; set; }
+        public void Ready() { }
 
-        public void Ready()
-        {
-            Tick().Run();
-        }
+        public GameTickScheduler tickScheduler => GameTickScheduler.Update;
+        public int Order => (int) GameEngineOrder.Physics;
 
-        IEnumerator Tick()
+        public IEnumerator Tick()
         {
             while (true)
             {

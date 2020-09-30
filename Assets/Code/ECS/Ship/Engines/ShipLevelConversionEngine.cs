@@ -1,12 +1,15 @@
 ﻿using System.Collections;
 using GreedyMerchants.Data.Audio;
 using GreedyMerchants.Data.Ship;
+using GreedyMerchants.ECS.Extensions.Svelto;
+using GreedyMerchants.Unity;
 using Svelto.ECS;
+using Svelto.Tasks;
 using Svelto.Tasks.Enumerators;
 
 namespace GreedyMerchants.ECS.Ship
 {
-    public class ShipLevelConversionEngine : IQueryingEntitiesEngine
+    public class ShipLevelConversionEngine : IQueryingEntitiesEngine, ITickingEngine
     {
         readonly float[] _speedsByLevel;
 
@@ -25,18 +28,18 @@ namespace GreedyMerchants.ECS.Ship
 
         public EntitiesDB entitiesDB { get; set; }
 
-        public void Ready()
-        {
-            Tick().Run();
-        }
+        public void Ready() { }
 
-        IEnumerator Tick()
+        public GameTickScheduler tickScheduler => GameTickScheduler.Update;
+        public int Order => (int)GameEngineOrder.Logic;
+
+        public IEnumerator Tick()
         {
             while (true)
             {
                 yield return _conversionWait;
                 ProcessNextLevelSelection();
-                ProcessConversion().Run();
+                ProcessConversion().RunOnScheduler(StandardSchedulers.updateScheduler);
             }
         }
 

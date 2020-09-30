@@ -1,9 +1,11 @@
 ﻿using System.Collections;
+using GreedyMerchants.ECS.Extensions.Svelto;
+using GreedyMerchants.Unity;
 using Svelto.ECS;
 
 namespace GreedyMerchants.ECS.Ship
 {
-    public class ShipPointsAwardingEngine : IQueryingEntitiesEngine
+    public class ShipPointsAwardingEngine : IQueryingEntitiesEngine, ITickingEngine
     {
         readonly int _pointsPerCoin;
         readonly int _pointsPerKill;
@@ -15,10 +17,10 @@ namespace GreedyMerchants.ECS.Ship
         }
 
         public EntitiesDB entitiesDB { get; set; }
-        public void Ready()
-        {
-            Tick().Run();
-        }
+        public void Ready() { }
+
+        public GameTickScheduler tickScheduler => GameTickScheduler.Update;
+        public int Order => (int) GameEngineOrder.Logic;
 
         public IEnumerator Tick()
         {

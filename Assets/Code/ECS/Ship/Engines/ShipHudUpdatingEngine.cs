@@ -1,14 +1,14 @@
 ﻿using System.Collections;
 using GreedyMerchants.ECS.Extensions.Svelto;
 using GreedyMerchants.ECS.Unity.Extensions;
+using GreedyMerchants.Unity;
 using Svelto.ECS;
-using Svelto.ECS.Experimental;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
 namespace GreedyMerchants.ECS.Ship
 {
-    public class ShipHudUpdatingEngine : IQueryingEntitiesEngine
+    public class ShipHudUpdatingEngine : IQueryingEntitiesEngine, ITickingEngine
     {
         readonly AssetReference _pointsCanvasReference;
         WaitForEntitiesInGroupEnumerator<ShipComponent> _shipSpawnWait;
@@ -23,8 +23,10 @@ namespace GreedyMerchants.ECS.Ship
         public void Ready()
         {
             _shipSpawnWait = new WaitForEntitiesInGroupEnumerator<ShipComponent>(ShipGroups.Ships, entitiesDB);
-            Tick().Run();
         }
+
+        public GameTickScheduler tickScheduler => GameTickScheduler.Late;
+        public int Order => (int)GameEngineOrder.Output;
 
         public IEnumerator Tick()
         {

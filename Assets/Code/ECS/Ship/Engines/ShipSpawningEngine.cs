@@ -8,6 +8,7 @@ using GreedyMerchants.ECS.Grid;
 using GreedyMerchants.ECS.Player;
 using GreedyMerchants.ECS.Unity;
 using GreedyMerchants.ECS.Unity.Extensions;
+using GreedyMerchants.Unity;
 using Svelto.ECS;
 using Svelto.Tasks;
 using Svelto.Tasks.Enumerators;
@@ -17,7 +18,7 @@ using Random = Unity.Mathematics.Random;
 
 namespace GreedyMerchants.ECS.Ship
 {
-    public class ShipSpawningEngine : IQueryingEntitiesEngine, IReactOnSwap<ShipViewComponent>
+    public class ShipSpawningEngine : IQueryingEntitiesEngine, IReactOnSwap<ShipViewComponent>, ITickingEngine
     {
         readonly IEntityFactory _entityFactory;
         readonly IEntityFunctions _functions;
@@ -44,12 +45,12 @@ namespace GreedyMerchants.ECS.Ship
 
         public EntitiesDB entitiesDB { get; set; }
 
-        public void Ready()
-        {
-            Tick().Run();
-        }
+        public void Ready() { }
 
-        IEnumerator Tick()
+        public GameTickScheduler tickScheduler => GameTickScheduler.Early;
+        public int Order => (int) GameEngineOrder.Init;
+
+        public IEnumerator Tick()
         {
             // Register possible transitions.
             GroupCompound<AI_SHIP, AFLOAT>.BuildGroup.SetTagSwap<AFLOAT, SUNK>(GroupCompound<SUNK, AI_SHIP>.BuildGroup);

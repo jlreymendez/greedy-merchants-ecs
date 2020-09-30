@@ -1,12 +1,14 @@
 ﻿using System.Collections;
+using GreedyMerchants.ECS.Extensions.Svelto;
 using GreedyMerchants.ECS.Grid;
 using GreedyMerchants.ECS.Unity;
+using GreedyMerchants.Unity;
 using Svelto.ECS;
 using Unity.Mathematics;
 
 namespace GreedyMerchants.ECS.Ship
 {
-    public class ShipMovementEngine : IQueryingEntitiesEngine
+    public class ShipMovementEngine : IQueryingEntitiesEngine, ITickingEngine
     {
         const float MinDistance = 0.02f;
 
@@ -21,12 +23,12 @@ namespace GreedyMerchants.ECS.Ship
 
         public EntitiesDB entitiesDB { get; set; }
 
-        public void Ready()
-        {
-            Tick().Run();
-        }
+        public void Ready() { }
 
-        IEnumerator Tick()
+        public GameTickScheduler tickScheduler => GameTickScheduler.Update;
+        public int Order => (int) GameEngineOrder.Movement;
+
+        public IEnumerator Tick()
         {
             while (entitiesDB.Count<GridComponent>(GridGroups.Grid) == 0)
             {
@@ -36,14 +38,14 @@ namespace GreedyMerchants.ECS.Ship
             while (true)
             {
                 Process();
-
                 yield return null;
             }
         }
 
         void Process()
         {
-            var query = entitiesDB.QueryEntities<ShipComponent, ShipNavigationComponent, ShipViewComponent>(ShipGroups.AliveShips);
+            var query =
+                entitiesDB.QueryEntities<ShipComponent, ShipNavigationComponent, ShipViewComponent>(ShipGroups.AliveShips);
             var grid = entitiesDB.QueryEntity<GridComponent>(0, GridGroups.Grid);
             foreach (var (ships, navigations, views, count) in query.groups)
             {

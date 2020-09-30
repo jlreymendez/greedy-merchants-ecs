@@ -3,12 +3,12 @@ using GreedyMerchants.Data.Audio;
 using GreedyMerchants.ECS.Coin;
 using GreedyMerchants.ECS.Extensions.Svelto;
 using GreedyMerchants.ECS.Player;
+using GreedyMerchants.Unity;
 using Svelto.ECS;
-using UnityEngine;
 
 namespace GreedyMerchants.ECS.Ship
 {
-    public class ShipCoinPickupEngine : IQueryingEntitiesEngine
+    public class ShipCoinPickupEngine : IQueryingEntitiesEngine, ITickingEngine
     {
         Consumer<ShipComponent> _consumer;
 
@@ -19,12 +19,12 @@ namespace GreedyMerchants.ECS.Ship
 
         public EntitiesDB entitiesDB { get; set; }
 
-        public void Ready()
-        {
-            Tick().Run();
-        }
+        public void Ready() { }
 
-        IEnumerator Tick()
+        public GameTickScheduler tickScheduler => GameTickScheduler.Update;
+        public int Order => (int)GameEngineOrder.Physics;
+
+        public IEnumerator Tick()
         {
             while (true)
             {

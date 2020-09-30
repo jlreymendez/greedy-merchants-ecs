@@ -1,8 +1,6 @@
-﻿using System;
-using Svelto.ECS;
+﻿using Svelto.ECS;
 using Svelto.ECS.Extensions.Unity;
 using Svelto.ECS.Hybrid;
-using UnityEditor;
 using UnityEngine;
 
 namespace GreedyMerchants.ECS.Ship
@@ -28,7 +26,7 @@ namespace GreedyMerchants.ECS.Ship
             var egidHolder = other.gameObject.GetComponent<EGIDHolderImplementor>();
             if (egidHolder != null)
             {
-                HitChange.value = new ShipCollisionData(egidHolder.ID, other.gameObject.layer);
+                HitChange.value = new ShipCollisionData(egidHolder.ID, other.gameObject.layer, Time.time);
             }
         }
     }
