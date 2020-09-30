@@ -4,7 +4,6 @@ using GreedyMerchants.Data.Ship;
 using GreedyMerchants.ECS.Extensions.Svelto;
 using GreedyMerchants.Unity;
 using Svelto.ECS;
-using Svelto.Tasks;
 using Svelto.Tasks.Enumerators;
 
 namespace GreedyMerchants.ECS.Ship
@@ -28,7 +27,7 @@ namespace GreedyMerchants.ECS.Ship
 
         public EntitiesDB entitiesDB { get; set; }
 
-        public void Ready() { }
+        public void Ready() {}
 
         public GameTickScheduler tickScheduler => GameTickScheduler.Update;
         public int Order => (int)GameEngineOrder.Logic;
@@ -39,7 +38,9 @@ namespace GreedyMerchants.ECS.Ship
             {
                 yield return _conversionWait;
                 ProcessNextLevelSelection();
-                ProcessConversion().RunOnScheduler(StandardSchedulers.updateScheduler);
+                // Reset conversion wait here so we keep conversion periods constant.
+                _conversionWait.Reset();
+                yield return ProcessConversion();
             }
         }
 
