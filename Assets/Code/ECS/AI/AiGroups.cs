@@ -1,10 +1,16 @@
-﻿using GreedyMerchants.ECS.Ship;
+﻿using GreedyMerchants.ECS.Extensions.Svelto;
+using GreedyMerchants.ECS.Ship;
 using Svelto.ECS;
 
 namespace GreedyMerchants.ECS.AI
 {
-    public class AiGroups
+    public static class AiGroups
     {
+        static AiGroups()
+        {
+            GroupCompound<AI_SHIP, AFLOAT>.BuildGroup.SetTagSwap<AFLOAT, SUNK>(GroupCompound<SUNK, AI_SHIP>.BuildGroup);
+        }
+
         public static readonly ExclusiveGroupStruct AiShip = GroupCompound<AI_SHIP, AFLOAT>.BuildGroup;
     }
 
