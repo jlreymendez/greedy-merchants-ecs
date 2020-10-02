@@ -16,8 +16,8 @@ namespace GreedyMerchants.ECS.Common
             get => _spriteIndex;
             set
             {
-                _spriteIndex = value;
-                _spriteRenderer.sprite = Sprites[value];
+                _spriteIndex = math.min(Sprites.Length - 1, value);
+                if (_spriteIndex >= 0) _spriteRenderer.sprite = Sprites[value];
             }
         }
 
