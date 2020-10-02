@@ -5,7 +5,6 @@ using Code.ECS.Coin.Descriptors;
 using GreedyMerchants.ECS.Grid;
 using GreedyMerchants.ECS.Unity;
 using GreedyMerchants.ECS.Unity.Extensions;
-using Svelto.DataStructures;
 using Svelto.ECS;
 using Svelto.Tasks.Enumerators;
 using Unity.Mathematics;
@@ -104,10 +103,9 @@ namespace GreedyMerchants.ECS.Coin
                 // Spawn first coin if ready.
                 if (coinToSpawn > -1)
                 {
-                    var cell = cells[_random.NextInt(0, cellCount)];
-                    _functions.SwapEntityGroup<GridCellEntityDescriptor>(cell.ID, GridGroups.GridWaterHasCoinGroup);
-
+                    // todo: check if this allows spawning two coins in the same cell. (Possible runtime exception)
                     // Recycle coin.
+                    var cell = cells[_random.NextInt(0, cellCount)];
                     var coinView = coinViews[coinToSpawn];
                     _functions.SwapEntityGroup<CoinEntityDescriptor>(coinView.ID, CoinGroups.SpawnedCoinsGroup);
 
