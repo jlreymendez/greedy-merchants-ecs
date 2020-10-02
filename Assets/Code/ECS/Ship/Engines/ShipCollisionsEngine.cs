@@ -25,7 +25,6 @@ namespace GreedyMerchants.ECS.Ship
         {
             // Note: we are handling multiple collisions on each frame, make sure state is still valid.
             if (entitiesDB.Exists<ShipComponent>(sender) == false) return;
-            if (entitiesDB.Exists<ShipComponent>(collisionData.EntityId) == false) return;
 
             ref var ship = ref entitiesDB.QueryEntity<ShipComponent>(sender);
             ship.Collision = collisionData;
