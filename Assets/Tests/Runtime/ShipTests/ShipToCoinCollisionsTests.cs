@@ -18,7 +18,7 @@ namespace GreedyMerchants.Tests.Runtime.ShipTests
 
             The.Context.AddEngine(new ShipCollisionsEngine(The.Time));
             The.Context.AddEngine(new ShipCoinPickupEngine(The.ConsumerFactory));
-            The.Context.AddEngine(new CoinRecyclerEngine(The.EntityFunctions, The.Grid.Utils));
+            The.Context.AddEngine(new CoinRecyclerEngine(The.EntityFunctions));
         }
 
         [TearDown]
