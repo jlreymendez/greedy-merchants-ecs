@@ -12,7 +12,6 @@ using Svelto.Context;
 using Svelto.ECS;
 using Svelto.Tasks;
 using UnityEngine;
-using Time = GreedyMerchants.ECS.Unity.Time;
 
 namespace GreedyMerchants
 {
@@ -87,7 +86,7 @@ namespace GreedyMerchants
         {
             AddEngine(new CoinSpawningEngine(_seed, context.CoinDefinition, _entityFactory, _gameObjectFactory, _entityFunctions, _runner.Time));
             AddEngine(new CoinAnimationEngine(_runner.Time));
-            AddEngine(new CoinRecyclerEngine(_entityFunctions, _gridUtils));
+            AddEngine(new CoinRecyclerEngine(_entityFunctions));
         }
 
         void AddAiEngines(GameContext context)
