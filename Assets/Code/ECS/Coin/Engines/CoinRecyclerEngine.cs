@@ -1,14 +1,14 @@
 ﻿using System.Collections;
 using Code.ECS.Coin.Descriptors;
+using GreedyMerchants.ECS.Extensions.Svelto;
 using GreedyMerchants.ECS.Grid;
+using GreedyMerchants.Unity;
 using Svelto.ECS;
 using Svelto.Tasks;
-using Svelto.Tasks.Unity;
-using UnityEngine;
 
 namespace GreedyMerchants.ECS.Coin
 {
-    public class CoinRecyclerEngine : IQueryingEntitiesEngine
+    public class CoinRecyclerEngine : IQueryingEntitiesEngine, ITickingEngine
     {
         IEntityFunctions _functions;
         GridUtils _gridUtils;
@@ -26,7 +26,10 @@ namespace GreedyMerchants.ECS.Coin
             Tick().RunOnScheduler(StandardSchedulers.lateScheduler);
         }
 
-        IEnumerator Tick()
+        public GameTickScheduler tickScheduler => GameTickScheduler.Update;
+        public int Order => (int) GameEngineOrder.Logic;
+
+        public IEnumerator Tick()
         {
             while (true)
             {
