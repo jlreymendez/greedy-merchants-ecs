@@ -6,7 +6,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace GreedyMerchants.Tests.Runtime.ShipTests
+namespace GreedyMerchants.Tests.Runtime.Ships
 {
     public class ShipToShipCollisionsTests
     {
@@ -23,6 +23,7 @@ namespace GreedyMerchants.Tests.Runtime.ShipTests
         [TearDown]
         public void TearDown()
         {
+            TearDownUtils.DestroyAllEntityGameObjects();
             The.Context = null;
         }
 
@@ -36,11 +37,6 @@ namespace GreedyMerchants.Tests.Runtime.ShipTests
             yield return new WaitForSeconds(0.5f);
 
             Assert.IsFalse(The.DB.Exists<ShipComponent>(egid2), "Ship 2 should have been sunk.");
-
-            GameObject.Destroy(ship1);
-            GameObject.Destroy(ship2);
-
-            yield return null;
         }
 
         [UnityTest]
@@ -56,12 +52,6 @@ namespace GreedyMerchants.Tests.Runtime.ShipTests
             yield return new WaitForSeconds(0.5f);
 
             Assert.IsFalse(The.DB.Exists<ShipComponent>(egid2), "Player 2 should have been sunk.");
-
-            GameObject.Destroy(ship1);
-            GameObject.Destroy(ship2);
-            GameObject.Destroy(ship3);
-
-            yield return null;
         }
     }
 }

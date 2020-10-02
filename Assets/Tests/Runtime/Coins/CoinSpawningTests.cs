@@ -27,11 +27,7 @@ namespace GreedyMerchants.Tests.Runtime
         [TearDown]
         public void TearDown()
         {
-            var gameObjects = GameObject.FindObjectsOfType<EGIDHolderImplementor>();
-            for (var i = 0; i < gameObjects.Length; i++)
-            {
-                GameObject.Destroy(gameObjects[i].gameObject);
-            }
+            TearDownUtils.DestroyAllEntityGameObjects();
             The.Context = null;
         }
 

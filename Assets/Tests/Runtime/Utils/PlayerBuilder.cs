@@ -16,6 +16,7 @@ namespace GreedyMerchants.Tests.Runtime.Utils
             var initializer = The.EntityFactory.BuildEntity<PlayerShipDescriptor>(_id, _group, implementors);
 
             initializer.Init(new ShipLevelComponent { Level = _level, NextLevel = _level });
+            initializer.Init(new PointsComponent { Coins = _coins });
 
             ship.transform.position = _position;
             ship.transform.rotation = _rotation;
@@ -59,6 +60,12 @@ namespace GreedyMerchants.Tests.Runtime.Utils
             return this;
         }
 
+        public PlayerBuilder WithCoins(int coins)
+        {
+            _coins = coins;
+            return this;
+        }
+
         uint _id = 0;
         ExclusiveGroupStruct _group = PlayerGroups.PlayerShip;
         GameObject _prefab = PrefabUtility.LoadPrefabContents("Assets/Prefabs/Ship.prefab");
@@ -67,6 +74,7 @@ namespace GreedyMerchants.Tests.Runtime.Utils
         quaternion _rotation = quaternion.identity;
 
         ShipLevel _level = ShipLevel.Normal;
+        int _coins;
 
         public static implicit operator Tuple<EGID, GameObject>(PlayerBuilder builder)
         {

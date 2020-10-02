@@ -7,7 +7,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace GreedyMerchants.Tests.Runtime.ShipTests
+namespace GreedyMerchants.Tests.Runtime.Ships
 {
     public class ShipToCoinCollisionsTests
     {
@@ -24,6 +24,7 @@ namespace GreedyMerchants.Tests.Runtime.ShipTests
         [TearDown]
         public void TearDown()
         {
+            TearDownUtils.DestroyAllEntityGameObjects();
             The.Context = null;
         }
 
@@ -40,11 +41,6 @@ namespace GreedyMerchants.Tests.Runtime.ShipTests
 
             yield return new WaitForSeconds(0.5f);
             Assert.IsFalse(The.DB.Exists<CoinComponent>(coinEgid), "Coin should have been recycled.");
-
-            GameObject.Destroy(ship);
-            GameObject.Destroy(coin);
-
-            yield return null;
         }
 
         [UnityTest]
@@ -61,12 +57,6 @@ namespace GreedyMerchants.Tests.Runtime.ShipTests
 
             yield return new WaitForSeconds(0.5f);
             Assert.IsFalse(The.DB.Exists<CoinComponent>(coinEgid), "Coin should have been recycled.");
-
-            GameObject.Destroy(ship1);
-            GameObject.Destroy(ship2);
-            GameObject.Destroy(coin);
-
-            yield return null;
         }
     }
 }
