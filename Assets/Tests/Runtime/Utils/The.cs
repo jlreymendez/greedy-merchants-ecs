@@ -1,4 +1,5 @@
-﻿using GreedyMerchants.Data.Ship;
+﻿using Code.Data.Coin;
+using GreedyMerchants.Data.Ship;
 using GreedyMerchants.ECS.Grid;
 using GreedyMerchants.ECS.Unity;
 using Svelto.ECS;
@@ -63,5 +64,19 @@ namespace GreedyMerchants.Tests.Runtime.Utils
             }
         }
         static AssetLoader<ShipDefinition> shipDefinition;
+
+        public static AssetLoader<CoinDefinition> CoinDefinition
+        {
+            get
+            {
+                if (coinDefinition == null) coinDefinition = new CoinDefinitionBuilder();
+                return coinDefinition;
+            }
+            set
+            {
+                coinDefinition = null;
+            }
+        }
+        static AssetLoader<CoinDefinition> coinDefinition;
     }
 }
