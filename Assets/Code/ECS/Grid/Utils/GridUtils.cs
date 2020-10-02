@@ -12,12 +12,14 @@ namespace GreedyMerchants.ECS.Grid
         readonly float2 _cellSize;
         readonly float2 _gridOffset;
 
-        public GridUtils(GridDefinition definition)
+        public GridUtils(uint2 size, float2 cellSize)
         {
-            _gridSize = definition.Size;
-            _cellSize = definition.CellSize;
+            _gridSize = size;
+            _cellSize = cellSize;
             _gridOffset = _gridSize * _cellSize * -0.5f;
         }
+
+        public GridUtils(GridDefinition definition) : this(definition.Size, definition.CellSize) { }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public uint2 GetSize()

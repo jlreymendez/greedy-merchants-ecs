@@ -1,8 +1,6 @@
 ﻿using System.Collections;
 using GreedyMerchants.Data.Ship;
-using GreedyMerchants.ECS.AI;
 using GreedyMerchants.ECS.Extensions.Svelto;
-using GreedyMerchants.ECS.Player;
 using GreedyMerchants.Unity;
 using Svelto.ECS;
 using Unity.Mathematics;
@@ -12,14 +10,12 @@ namespace GreedyMerchants.ECS.Ship
     public class ShipAttackEngine : IQueryingEntitiesEngine, ITickingEngine
     {
         readonly int _coinDrops;
-        readonly IEntityFunctions _functions;
         Consumer<ShipComponent> _consumer;
 
-        public ShipAttackEngine(IEntityStreamConsumerFactory consumerFactory, IEntityFunctions functions, ShipDefinition shipDefinition)
+        public ShipAttackEngine(IEntityStreamConsumerFactory consumerFactory, ShipDefinition shipDefinition)
         {
             _consumer = consumerFactory.GenerateConsumer<ShipComponent>("ShipAttack", 20);
             _coinDrops = shipDefinition.CoinDrop;
-            _functions = functions;
         }
 
         public EntitiesDB entitiesDB { get; set; }
@@ -44,7 +40,7 @@ namespace GreedyMerchants.ECS.Ship
 
         void ProcessCollision(ref ShipComponent ship)
         {
-            // Make sure collision still exists, might have been sunk by another ship.
+            // Note: we are handling multiple collisions on each frame, make sure state is still valid.
             if (entitiesDB.Exists<ShipComponent>(ship.Collision.EntityId) == false) return;
             if (entitiesDB.Exists<ShipComponent>(ship.ID) == false) return;
 
@@ -52,6 +48,7 @@ namespace GreedyMerchants.ECS.Ship
             ref var points = ref entitiesDB.QueryEntity<PointsComponent>(ship.ID);
             var otherShipLevel = entitiesDB.QueryEntity<ShipLevelComponent>(ship.Collision.EntityId);
             ref var otherPoints = ref entitiesDB.QueryEntity<PointsComponent>(ship.Collision.EntityId);
+            ref var otherShip = ref entitiesDB.QueryEntity<ShipComponent>(ship.Collision.EntityId);
 
             if (shipLevel.Level > otherShipLevel.Level)
             {
@@ -60,19 +57,7 @@ namespace GreedyMerchants.ECS.Ship
                 points.Coins += coinDrop;
                 points.ShipsSunk++;
                 otherPoints.Coins -= coinDrop;
-
-                // Sunk the other ship.
-                // note: This semi abstracted engine shouldn't know which descriptor it is changing.
-                    // This probably needs to be handled else where.
-                var targetGroup = ship.Collision.EntityId.groupID.SwapTag<SUNK>();
-                if (GroupTagExtensions.Contains<PLAYER_SHIP>(ship.Collision.EntityId.groupID))
-                {
-                    _functions.SwapEntityGroup<PlayerShipDescriptor>(ship.Collision.EntityId, targetGroup);
-                }
-                else
-                {
-                    _functions.SwapEntityGroup<AiShipDescriptor>(ship.Collision.EntityId, targetGroup);
-                }
+                otherShip.IsSinking = true;
             }
         }
     }

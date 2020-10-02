@@ -71,8 +71,8 @@ namespace GreedyMerchants
             AddEngine(new ShipMovementEngine(_runner.Time, _gridUtils));
             AddEngine(new ShipCollisionsEngine(_runner.Time));
             AddEngine(new ShipCoinPickupEngine(_entityConsumerFactory));
-            AddEngine(new ShipAttackEngine(_entityConsumerFactory, _entityFunctions, context.Ship));
-            AddEngine(new ShipSinkingEngine());
+            AddEngine(new ShipAttackEngine(_entityConsumerFactory, context.Ship));
+            AddEngine(new ShipSinkingEngine(_entityFunctions));
             AddEngine(new ShipLevelConversionEngine(context.Ship));
             AddEngine(new ShipPointsAwardingEngine(context.PointsPerCoin, context.PointsPerKill));
             AddEngine(new ShipHudUpdatingEngine(context.PointsHUDCanvas));

@@ -9,6 +9,7 @@ namespace GreedyMerchants.ECS.Ship
         public ShipColor Color;
         public float Speed;
         public int2 Direction;
+        public bool IsSinking;
 
         public ShipCollisionData Collision;
         public EGID ID { get; set; }
