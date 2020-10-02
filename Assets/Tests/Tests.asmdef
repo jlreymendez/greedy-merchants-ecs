@@ -1,0 +1,27 @@
+{
+    "name": "GreedyMerchants.Tests.Runtime",
+    "references": [
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner",
+        "GreedyMerchants",
+        "Svelto.ECS",
+        "Svelto.Tasks",
+        "Svelto.Common_3",
+        "Unity.Addressables",
+        "Unity.Mathematics",
+        "Unity.ResourceManager"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
