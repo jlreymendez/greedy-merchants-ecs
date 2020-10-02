@@ -2,9 +2,11 @@
 using System.Collections;
 using Code.Data.Coin;
 using Code.ECS.Coin.Descriptors;
+using GreedyMerchants.ECS.Extensions.Svelto;
 using GreedyMerchants.ECS.Grid;
 using GreedyMerchants.ECS.Unity;
 using GreedyMerchants.ECS.Unity.Extensions;
+using GreedyMerchants.Unity;
 using Svelto.ECS;
 using Svelto.Tasks.Enumerators;
 using Unity.Mathematics;
@@ -14,6 +16,7 @@ using Random = Unity.Mathematics.Random;
 namespace GreedyMerchants.ECS.Coin
 {
     public class CoinSpawningEngine : IQueryingEntitiesEngine,
+        ITickingEngine,
         IReactOnAddAndRemove<CoinViewComponent>,
         IReactOnSwap<CoinViewComponent>, IReactOnSwap<CoinComponent>
     {
@@ -23,7 +26,6 @@ namespace GreedyMerchants.ECS.Coin
         readonly GameObjectFactory _gameObjectFactory;
         readonly ITime _time;
         Random _random;
-        WaitForSecondsEnumerator _spawnWait;
         WaitForSubmissionEnumerator _submissionWait;
 
         public CoinSpawningEngine(uint seed, CoinDefinition coinDefinition, IEntityFactory entityFactory, GameObjectFactory gameObjectFactory, IEntityFunctions functions, ITime time)
@@ -38,10 +40,7 @@ namespace GreedyMerchants.ECS.Coin
 
         public EntitiesDB entitiesDB { get; set; }
 
-        public void Ready()
-        {
-            Tick().Run();
-        }
+        public void Ready() { }
 
         public void Add(ref CoinViewComponent coinView, EGID egid)
         {
@@ -75,9 +74,11 @@ namespace GreedyMerchants.ECS.Coin
             }
         }
 
-        IEnumerator Tick()
+        public GameTickScheduler tickScheduler => GameTickScheduler.Early;
+        public int Order => (int) GameEngineOrder.Init;
+
+        public IEnumerator Tick()
         {
-            _spawnWait = new WaitForSecondsEnumerator(_coinDefinition.CoinsSpawnTime);
             _submissionWait = new WaitForSubmissionEnumerator(_functions, _entityFactory, entitiesDB);
             yield return ReadyAllCoins();
 
@@ -97,13 +98,15 @@ namespace GreedyMerchants.ECS.Coin
                 for (var i = 0; i < coinsCount; i++)
                 {
                     coins[i].TimeToRespawn -= _time.DeltaTime;
-                    coinToSpawn = coinToSpawn < 0 && coins[i].TimeToRespawn <= 0 ? i : coinToSpawn;
+                    if (coins[i].TimeToRespawn > 0) continue;
+
+                    coinToSpawn = i;
+                    break;
                 }
 
-                // Spawn first coin if ready.
+                // Spawn one coin if found.
                 if (coinToSpawn > -1)
                 {
-                    // todo: check if this allows spawning two coins in the same cell. (Possible runtime exception)
                     // Recycle coin.
                     var cell = cells[_random.NextInt(0, cellCount)];
                     var coinView = coinViews[coinToSpawn];
@@ -123,7 +126,7 @@ namespace GreedyMerchants.ECS.Coin
             for (uint i = 0; i < _coinDefinition.MaxCoins; i++)
             {
                 var (coin, implementors) = _gameObjectFactory.BuildForEntity(prefab);
-                var initializer = _entityFactory.BuildEntity<CoinEntityDescriptor>(i, CoinGroups.RecycledCoinsGroup, implementors);
+                _entityFactory.BuildEntity<CoinEntityDescriptor>(i, CoinGroups.RecycledCoinsGroup, implementors);
             }
         }
 
