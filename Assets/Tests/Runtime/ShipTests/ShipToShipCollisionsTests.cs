@@ -8,7 +8,7 @@ using UnityEngine.TestTools;
 
 namespace GreedyMerchants.Tests.Runtime.ShipTests
 {
-    public class CollisionTests
+    public class ShipToShipCollisionsTests
     {
         [UnitySetUp]
         public IEnumerator SetUp()
