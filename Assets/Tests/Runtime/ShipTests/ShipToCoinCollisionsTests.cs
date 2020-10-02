@@ -34,9 +34,12 @@ namespace GreedyMerchants.Tests.Runtime.ShipTests
             var (coinEgid, coin) = A.Coin.WithId(1).WithPosition(new float3(1));
 
             The.Context.Play();
-            yield return new WaitForSeconds(0.5f);
 
-            Assert.IsFalse(The.DB.Exists<ShipComponent>(coinEgid), "Coin should have been recycled.");
+            yield return null;
+            Assert.IsTrue(The.DB.Exists<CoinComponent>(coinEgid), "Coin should have been spawned.");
+
+            yield return new WaitForSeconds(0.5f);
+            Assert.IsFalse(The.DB.Exists<CoinComponent>(coinEgid), "Coin should have been recycled.");
 
             GameObject.Destroy(ship);
             GameObject.Destroy(coin);
@@ -52,9 +55,12 @@ namespace GreedyMerchants.Tests.Runtime.ShipTests
             var (coinEgid, coin) = A.Coin.WithId(1).WithPosition(new float3(1));
 
             The.Context.Play();
-            yield return new WaitForSeconds(0.5f);
 
-            Assert.IsFalse(The.DB.Exists<ShipComponent>(coinEgid), "Coin should have been recycled.");
+            yield return null;
+            Assert.IsTrue(The.DB.Exists<CoinComponent>(coinEgid), "Coin should have been spawned.");
+
+            yield return new WaitForSeconds(0.5f);
+            Assert.IsFalse(The.DB.Exists<CoinComponent>(coinEgid), "Coin should have been recycled.");
 
             GameObject.Destroy(ship1);
             GameObject.Destroy(ship2);
