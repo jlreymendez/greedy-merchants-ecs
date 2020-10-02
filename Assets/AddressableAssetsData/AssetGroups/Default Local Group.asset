@@ -27,8 +27,8 @@ MonoBehaviour:
     m_Address: BlueShip
     m_ReadOnly: 0
     m_SerializedLabels: []
-    m_MainAsset: {fileID: 2800000, guid: 2cbd83b6bef9b864f9deb1248e837c75, type: 3}
-    m_TargetAsset: {fileID: 2800000, guid: 2cbd83b6bef9b864f9deb1248e837c75, type: 3}
+    m_MainAsset: {fileID: 0}
+    m_TargetAsset: {fileID: 0}
   - m_GUID: 2e92d128b817e73469c6722f370aeb46
     m_Address: PirateShip
     m_ReadOnly: 0
@@ -59,8 +59,20 @@ MonoBehaviour:
     m_SerializedLabels: []
     m_MainAsset: {fileID: 0}
     m_TargetAsset: {fileID: 0}
+  - m_GUID: b212601245399c54e92641f419cd7697
+    m_Address: GridPrefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_MainAsset: {fileID: 0}
+    m_TargetAsset: {fileID: 0}
   - m_GUID: ba278f14a88629e4db1672ed85c0535d
     m_Address: TimerHUDPrefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_MainAsset: {fileID: 0}
+    m_TargetAsset: {fileID: 0}
+  - m_GUID: d02f7b42ced514c4bb0e22a72dfe620f
+    m_Address: ShipDefinition
     m_ReadOnly: 0
     m_SerializedLabels: []
     m_MainAsset: {fileID: 0}
