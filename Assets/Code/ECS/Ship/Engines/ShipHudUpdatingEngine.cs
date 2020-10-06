@@ -22,7 +22,7 @@ namespace GreedyMerchants.ECS.Ship
 
         public void Ready()
         {
-            _shipSpawnWait = new WaitForEntitiesInGroupEnumerator<ShipComponent>(ShipGroups.Ships, entitiesDB);
+            _shipSpawnWait = new WaitForEntitiesInGroupEnumerator<ShipComponent>(ShipGroups.AliveShipGroups, entitiesDB);
         }
 
         public GameTickScheduler tickScheduler => GameTickScheduler.Late;
@@ -53,7 +53,7 @@ namespace GreedyMerchants.ECS.Ship
 
         void InitialSetup()
         {
-            var shipQuery = entitiesDB.QueryEntities<ShipComponent, ShipViewComponent>(ShipGroups.Ships);
+            var shipQuery = entitiesDB.QueryEntities<ShipComponent, ShipViewComponent>(ShipGroups.AllShipGroupsSnapshot);
             foreach (var (ship, shipViews, count) in shipQuery.groups)
             {
                 for (var i = 0; i < count; i++)
@@ -67,7 +67,7 @@ namespace GreedyMerchants.ECS.Ship
 
         void Process()
         {
-            var shipQuery = entitiesDB.QueryEntities<PointsComponent, ShipViewComponent>(ShipGroups.Ships);
+            var shipQuery = entitiesDB.QueryEntities<PointsComponent, ShipViewComponent>(ShipGroups.AllShipGroupsSnapshot);
             foreach (var (points, shipViews, count) in shipQuery.groups)
             {
                 for (var i = 0; i < count; i++)

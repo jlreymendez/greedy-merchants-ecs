@@ -122,7 +122,7 @@ namespace GreedyMerchants.ECS.AI
         void UpdateTargetPositions()
         {
             var (targets, count) = entitiesDB.QueryEntities<AiTarget>(AiGroups.AiShip);
-            var shipViewsQuery = entitiesDB.QueryEntities<ShipViewComponent>(ShipGroups.AliveShips);
+            var shipViewsQuery = entitiesDB.QueryEntities<ShipViewComponent>(ShipGroups.AliveShipGroups);
 
             for (var i = 0; i < count; i++)
             {

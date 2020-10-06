@@ -47,7 +47,7 @@ namespace GreedyMerchants.ECS.Ship
         void ProcessNextLevelSelection()
         {
             var shipQuery =
-                entitiesDB.QueryEntities<ShipLevelComponent, PointsComponent>(ShipGroups.AliveShips);
+                entitiesDB.QueryEntities<ShipLevelComponent, PointsComponent>(ShipGroups.AliveShipGroups);
             var invalidEgid = new EGID();
             var pirateEgid = invalidEgid;
             var merchantEgid = invalidEgid;
@@ -107,7 +107,7 @@ namespace GreedyMerchants.ECS.Ship
         void AnimateFrame(int frame)
         {
             var nextLevelFrame = frame % 2 == 0;
-            var shipQuery = entitiesDB.QueryEntities<ShipLevelComponent, ShipViewComponent>(ShipGroups.Ships);
+            var shipQuery = entitiesDB.QueryEntities<ShipLevelComponent, ShipViewComponent>(ShipGroups.AllShipGroupsSnapshot);
             foreach (var (shipLevels, shipViews, count) in shipQuery.groups)
             {
                 for (var i = 0; i < count; i++)
@@ -119,7 +119,7 @@ namespace GreedyMerchants.ECS.Ship
 
         void Convert()
         {
-            var shipQuery = entitiesDB.QueryEntities<ShipComponent, ShipLevelComponent, ShipViewComponent>(ShipGroups.Ships);
+            var shipQuery = entitiesDB.QueryEntities<ShipComponent, ShipLevelComponent, ShipViewComponent>(ShipGroups.AllShipGroupsSnapshot);
             foreach (var (ships, shipLevels, shipViews, count) in shipQuery.groups)
             {
                 for (var i = 0; i < count; i++)

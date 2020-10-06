@@ -45,10 +45,10 @@ namespace GreedyMerchants
 
             AddMatchEngines(context);
             AddGridEngines(context);
+            AddShipEngines(context);
             AddPlayerEngines(context);
             AddAiEngines(context);
             AddCoinEngines(context);
-            AddShipEngines(context);
 
             _runner.Play();
         }
