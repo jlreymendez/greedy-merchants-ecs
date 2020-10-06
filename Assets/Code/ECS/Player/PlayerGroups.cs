@@ -12,6 +12,7 @@ namespace GreedyMerchants.ECS.Player
         }
 
         public static readonly ExclusiveGroupStruct PlayerShip = GroupCompound<PLAYER_SHIP, AFLOAT>.BuildGroup;
+        public static readonly ExclusiveGroupStruct SunkPlayerShip = GroupCompound<PLAYER_SHIP, SUNK>.BuildGroup;
     }
 
     public class PLAYER_SHIP : GroupTag<PLAYER_SHIP> {}
