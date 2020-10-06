@@ -35,7 +35,7 @@ namespace GreedyMerchants.Tests.Runtime.Utils
         }
 
         uint _id;
-        ExclusiveGroupStruct _group = GridGroups.GridWaterNoCoinGroup;
+        ExclusiveGroupStruct _group = GridGroups.GridWaterGroup;
         float2 _position;
 
         public static implicit operator EGID(GridCellBuilder builder)

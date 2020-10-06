@@ -27,6 +27,7 @@ namespace GreedyMerchants.ECS.Coin
         readonly ITime _time;
         Random _random;
         WaitForSubmissionEnumerator _submissionWait;
+        FilterGroup _freeCellsFilter;
 
         public CoinSpawningEngine(uint seed, CoinDefinition coinDefinition, IEntityFactory entityFactory, GameObjectFactory gameObjectFactory, IEntityFunctions functions, ITime time)
         {
@@ -40,7 +41,11 @@ namespace GreedyMerchants.ECS.Coin
 
         public EntitiesDB entitiesDB { get; set; }
 
-        public void Ready() { }
+        public void Ready()
+        {
+            _freeCellsFilter = entitiesDB.GetFilters()
+                .CreateOrGetFilterForGroup<GridCellComponent>(GridGroups.FreeCellFilter, GridGroups.GridWaterGroup);
+        }
 
         public void Add(ref CoinViewComponent coinView, EGID egid)
         {
@@ -84,10 +89,7 @@ namespace GreedyMerchants.ECS.Coin
 
             while (true)
             {
-                // yield return SpawnCoin();
                 yield return _submissionWait;
-                var (cells, cellCount) = entitiesDB.QueryEntities<GridCellComponent>(GridGroups.GridWaterNoCoinGroup);
-                if (cellCount == 0) continue;
 
                 var (coins, coinViews, coinsCount) =
                     entitiesDB.QueryEntities<CoinComponent, CoinViewComponent>(CoinGroups.RecycledCoinsGroup);
@@ -104,16 +106,19 @@ namespace GreedyMerchants.ECS.Coin
                     break;
                 }
 
-                // Spawn one coin if found.
-                if (coinToSpawn > -1)
-                {
-                    // Recycle coin.
-                    var cell = cells[_random.NextInt(0, cellCount)];
-                    var coinView = coinViews[coinToSpawn];
-                    _functions.SwapEntityGroup<CoinEntityDescriptor>(coinView.ID, CoinGroups.SpawnedCoinsGroup);
+                // Make sure there are available cells to drop a coin.
+                var (cells, cellCount) = entitiesDB.QueryEntities<GridCellComponent>(GridGroups.GridWaterGroup);
+                if (cellCount == 0 || _freeCellsFilter.filteredIndices.Count() == 0 || coinToSpawn < 0) continue;
 
-                    coinView.Transform.Position = new float3(cell.WorldCenter, 0);
-                }
+                // Spawn one coin if found (recycling it).
+                var availableCells = _freeCellsFilter.filteredIndices;
+                var selectedCell = _random.NextUInt(0, (uint)availableCells.Count());
+                var cell = cells[availableCells.Get(selectedCell)];
+
+                var coinView = coinViews[coinToSpawn];
+                _functions.SwapEntityGroup<CoinEntityDescriptor>(coinView.ID, CoinGroups.SpawnedCoinsGroup);
+
+                coinView.Transform.Position = new float3(cell.WorldCenter, 0);
             }
         }
 

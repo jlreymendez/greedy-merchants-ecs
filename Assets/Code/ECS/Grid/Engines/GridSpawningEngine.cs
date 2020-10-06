@@ -42,7 +42,7 @@ namespace GreedyMerchants.ECS.Grid.Engines
                     // note: it is probable that we don't need to create the land cells at all,
                         // unless there is some gameplay feature that needs them.
                     var initializer = _entityFactory.BuildEntity<GridCellEntityDescriptor>(
-                        cellIndex, isLand ? GridGroups.GridLandGroup : GridGroups.GridWaterNoCoinGroup
+                        cellIndex, isLand ? GridGroups.GridLandGroup : GridGroups.GridWaterGroup
                     );
 
                     initializer.Init(new GridCellComponent {

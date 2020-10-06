@@ -147,7 +147,7 @@ namespace GreedyMerchants.ECS.Ship
 
         void Relocate(ShipViewComponent shipView, EGID egid)
         {
-            var (cells, count) = entitiesDB.QueryEntities<GridCellComponent>(GridGroups.GridWaterHasCoinGroup);
+            var (cells, count) = entitiesDB.QueryEntities<GridCellComponent>(GridGroups.GridWaterGroup);
             var index = _random.NextInt(0, count);
 
             ref var navigation = ref entitiesDB.QueryEntity<ShipNavigationComponent>(egid);

@@ -62,7 +62,7 @@ namespace GreedyMerchants
         {
             var gridLand = new GridTilemapRepresentation(context.Grid, context.LandTilemap, _gridUtils);
             AddEngine(new GridSpawningEngine(_entityFactory, _gridUtils, gridLand));
-            AddEngine(new GridCellRecyclingEngine(_entityFunctions, _gridUtils));
+            AddEngine(new GridCellCoinFilteringEngine(_gridUtils));
         }
 
         void AddShipEngines(GameContext context)
