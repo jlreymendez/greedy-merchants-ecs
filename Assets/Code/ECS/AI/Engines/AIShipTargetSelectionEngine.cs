@@ -49,7 +49,7 @@ namespace GreedyMerchants.ECS.AI
 
             var aiShips = entitiesDB
                 .QueryEntities<AiTarget, ShipLevelComponent, ShipViewComponent>(GroupCompound<AI_SHIP, AFLOAT>.Groups);
-            foreach (var (targets, shipLevels, shipViews, count) in aiShips.groups)
+            foreach (var ((targets, shipLevels, shipViews, count), group) in aiShips.groups)
             {
                 for (var i = 0; i < count; i++)
                 {
@@ -74,7 +74,7 @@ namespace GreedyMerchants.ECS.AI
             var minDistance = 10f; // todo: get number from ship definition.
             var closestTarget = new EGID();
             var closestPosition = uint2.zero;
-            foreach (var (shipLevels, shipViews, count) in allShips)
+            foreach (var ((shipLevels, shipViews, count), group) in allShips)
             {
                 for (var i = 0; i < count; i++)
                 {
@@ -131,7 +131,7 @@ namespace GreedyMerchants.ECS.AI
                 if (entitiesDB.FindEGID(target.Locator, out var egid) == false) continue;
                 if (GroupTagExtensions.Contains<AFLOAT>(egid.groupID) == false) continue;
 
-                foreach (var (shipViews, shipCount) in shipViewsQuery.groups)
+                foreach (var ((shipViews, shipCount), group) in shipViewsQuery.groups)
                 {
                     for (var j = 0; j < shipCount; j++)
                     {

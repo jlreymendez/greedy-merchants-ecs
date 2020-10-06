@@ -22,7 +22,7 @@ namespace Svelto.DataStructures
     {
         static NB()
         {
-            if (UnmanagedTypeExtensions.IsUnmanagedEx<T>() == false)
+            if (TypeCache<T>.IsUnmanaged == false)
                 throw new Exception("NativeBuffer (NB) supports only unmanaged types");
         }
         
@@ -58,6 +58,8 @@ namespace Svelto.DataStructures
             get => (int) _capacity;
         }
 
+        public bool isValid => _ptr != IntPtr.Zero;
+
         public ref T this[uint index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -85,7 +87,7 @@ namespace Svelto.DataStructures
                 {
 #if DEBUG && !PROFILE_SVELTO
                     if (index < 0 || index >= _capacity)
-                        throw new Exception("NativeBuffer - out of bound access");
+                        throw new Exception($"NativeBuffer - out of bound access: index {index} - capacity {capacity}");
 #endif
                     var size = MemoryUtilities.SizeOf<T>();
                     ref var asRef = ref Unsafe.AsRef<T>((void*) (_ptr + (int) (index * size)));

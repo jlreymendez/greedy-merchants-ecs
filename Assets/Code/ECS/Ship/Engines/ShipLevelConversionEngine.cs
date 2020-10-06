@@ -54,7 +54,7 @@ namespace GreedyMerchants.ECS.Ship
             var pirateCoins = int.MaxValue;
             var merchantCoins = 0;
 
-            foreach (var (shipLevels, points, count) in shipQuery.groups)
+            foreach (var ((shipLevels, points, count), group) in shipQuery.groups)
             {
                 for (var i = 0; i < count; i++)
                 {
@@ -108,7 +108,7 @@ namespace GreedyMerchants.ECS.Ship
         {
             var nextLevelFrame = frame % 2 == 0;
             var shipQuery = entitiesDB.QueryEntities<ShipLevelComponent, ShipViewComponent>(ShipGroups.AllShipGroupsSnapshot);
-            foreach (var (shipLevels, shipViews, count) in shipQuery.groups)
+            foreach (var ((shipLevels, shipViews, count), group) in shipQuery.groups)
             {
                 for (var i = 0; i < count; i++)
                 {
@@ -120,7 +120,7 @@ namespace GreedyMerchants.ECS.Ship
         void Convert()
         {
             var shipQuery = entitiesDB.QueryEntities<ShipComponent, ShipLevelComponent, ShipViewComponent>(ShipGroups.AllShipGroupsSnapshot);
-            foreach (var (ships, shipLevels, shipViews, count) in shipQuery.groups)
+            foreach (var ((ships, shipLevels, shipViews, count), group) in shipQuery.groups)
             {
                 for (var i = 0; i < count; i++)
                 {

@@ -34,7 +34,7 @@ namespace GreedyMerchants.ECS.Ship
         void Process()
         {
             var shipQuery = entitiesDB.QueryEntities<PointsComponent, ShipViewComponent>(ShipGroups.AllShipGroupsSnapshot);
-            foreach (var (points, shipViews, count) in shipQuery.groups)
+            foreach (var ((points, shipViews, count), group) in shipQuery.groups)
             {
                 for (var i = 0; i < count; i++)
                 {

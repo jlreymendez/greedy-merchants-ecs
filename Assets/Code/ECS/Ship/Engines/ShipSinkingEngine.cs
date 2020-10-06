@@ -61,7 +61,7 @@ namespace GreedyMerchants.ECS.Ship
             void Process()
             {
                 var query = entitiesDB.QueryEntities<ShipComponent>(ShipGroups.AliveShipGroups);
-                foreach (var (ships, count) in query.groups)
+                foreach (var ((ships, count), group) in query.groups)
                 {
                     for (var i = 0; i < count; i++)
                     {

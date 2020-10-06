@@ -1,7 +1,7 @@
 {
     "name": "Svelto.Pool.Debugger_3",
     "references": [
-        "Svelto.Common_3"
+        "Svelto.Common"
     ],
     "includePlatforms": [
         "Editor"

@@ -15,27 +15,44 @@ namespace Svelto.DataStructures
 #endif
         IntPtr _buffer;
 
-        public NativeStrategy(uint size, Allocator nativeAllocator) : this() { Alloc(size, nativeAllocator); }
+#if DEBUG && !PROFILE_SVELTO            
+        static NativeStrategy()
+        {
+            if (TypeCache<T>.IsUnmanaged == false)
+                throw new PreconditionException("Only unmanaged data can be stored natively");
+        }
+#endif        
 
         public void Alloc(uint newCapacity, Allocator nativeAllocator)
         {
+#if DEBUG && !PROFILE_SVELTO            
+            if (!(this._realBuffer.ToNativeArray(out _) == IntPtr.Zero))
+                throw new PreconditionException("can't alloc an already allocated buffer");
+#endif            
             _nativeAllocator = nativeAllocator;
-
-            Check.Require(this._realBuffer.ToNativeArray(out _) == IntPtr.Zero
-                        , "can't alloc an already allocated buffer");
 
             var realBuffer =
                 MemoryUtilities.Alloc((uint) (newCapacity * MemoryUtilities.SizeOf<T>()), _nativeAllocator);
-            NB<T>      b      = new NB<T>(realBuffer, newCapacity);
-            _buffer = IntPtr.Zero;
-            this._realBuffer = b;
+            NB<T> b = new NB<T>(realBuffer, newCapacity);
+            _buffer          = IntPtr.Zero;
+            _realBuffer = b;
+        }
+
+        public bool isValid => _realBuffer.isValid;
+
+        public NativeStrategy(uint size, Allocator nativeAllocator) : this()
+        {
+            Alloc(size, nativeAllocator);
         }
 
         public void Resize(uint newCapacity)
         {
-            Check.Require(newCapacity > 0, "Resize requires a size greater than 0");
-            Check.Require(newCapacity > capacity, "can't resize to a smaller size");
-
+#if DEBUG && !PROFILE_SVELTO            
+            if (!(newCapacity > 0))
+                throw new PreconditionException("Resize requires a size greater than 0");
+            if (!(newCapacity > capacity))
+                throw new PreconditionException("can't resize to a smaller size");
+#endif            
             var pointer = _realBuffer.ToNativeArray(out _);
             var sizeOf  = MemoryUtilities.SizeOf<T>();
             pointer = MemoryUtilities.Realloc(pointer, (uint) (capacity * sizeOf), (uint) (newCapacity * sizeOf)
@@ -72,7 +89,6 @@ namespace Svelto.DataStructures
         public NB<T> ToRealBuffer() { return _realBuffer; }
 
         public int       capacity           => _realBuffer.capacity;
-
         public Allocator allocationStrategy => _nativeAllocator;
 
         public void Dispose()
@@ -84,7 +100,7 @@ namespace Svelto.DataStructures
                 MemoryUtilities.Free(_realBuffer.ToNativeArray(out _), Allocator.Persistent);
             }
             else
-                Console.LogWarning($"trying to dispose disposed buffer. Type held: {typeof(T)}");
+                throw new Exception("trying to dispose disposed buffer");
 
             _realBuffer = default;
         }

@@ -15,7 +15,8 @@ namespace Svelto.Common
         None,
         Temp,
         TempJob,
-        Persistent
+        Persistent,
+        Managed
     }
 #else    
     public enum Allocator
@@ -39,7 +40,9 @@ namespace Svelto.Common
         /// <summary>
         ///   <para>Persistent allocation.</para>
         /// </summary>
-        Persistent = Unity.Collections.Allocator.Persistent
+        Persistent = Unity.Collections.Allocator.Persistent,
+        
+        Managed
     }
 #endif
 
@@ -90,7 +93,8 @@ namespace Svelto.Common
                 IntPtr signedPointer = Alloc(newCapacity, allocator);
 
                 //Copy only the real data
-                Unsafe.CopyBlock((void*) signedPointer, (void*) realBuffer, oldCapacity);
+                if (oldCapacity > 0)
+                    Unsafe.CopyBlock((void*) signedPointer, (void*) realBuffer, oldCapacity);
                 
                 //Free unsigns the pointer itself
                 Free(realBuffer, allocator);
@@ -155,14 +159,21 @@ namespace Svelto.Common
         static class CachedSize<T> where T : struct
         {
             public static readonly uint cachedSize = (uint) Unsafe.SizeOf<T>();
+            public static readonly uint cachedSizeAligned =  MemoryUtilities.Align4(cachedSize);
         }
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         //THIS MUST STAY INT. THE REASON WHY EVERYTHING IS INT AND NOT UINT IS BECAUSE YOU CAN END UP
         //DOING SUBTRACT OPERATION EXPECTING TO BE < 0 AND THEY WON'T BE
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int SizeOf<T>() where T : struct
         {
             return (int) CachedSize<T>.cachedSize;
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int SizeOfAligned<T>() where T : struct
+        {
+            return (int) CachedSize<T>.cachedSizeAligned;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -223,7 +234,7 @@ namespace Svelto.Common
                 for (int i = 0; i < 64; i += 4)
                     Unsafe.Write( (void*) (pointerToSign+ (int) (capacityWithoutSignature) + i), value); //4 bytes size allocated
 
-                return (IntPtr) ((byte*) pointerToSign);
+                return (IntPtr) (byte*) pointerToSign;
 #else
                 return (IntPtr) pointerToSign;
 #endif
@@ -256,7 +267,7 @@ namespace Svelto.Common
             {
                 var u = Unsafe.Read<uint>((void*) (debugPtr));
                 if (u != 0xDEADBEEF)
-                    throw new Exception();
+                    throw new Exception("Memory Boundaries check failed!!!");
 
                 debugPtr += 4;
             }
@@ -268,7 +279,7 @@ namespace Svelto.Common
             {
                 var u = Unsafe.Read<uint>((void*) (debugPtr + i));
                 if (u != 0xDEADBEEF)
-                    throw new Exception();
+                    throw new Exception("Memory Boundaries check failed!!!");
             }
 #endif
         }

@@ -1,16 +1,20 @@
 using System;
 using System.Runtime.CompilerServices;
+using DBC.Common;
 using Svelto.Common;
 
 namespace Svelto.DataStructures
 {
     public struct
-        SveltoDictionary<TKey, TValue, TKeyStrategy, TValueStrategy> : ISveltoDictionary<TKey, TValue>
-        where TKey : IEquatable<TKey>
+        SveltoDictionary<TKey, TValue, TKeyStrategy, TValueStrategy, TBucketStrategy> : ISveltoDictionary<TKey, TValue>
+        where TKey : struct, IEquatable<TKey>
         where TKeyStrategy : struct, IBufferStrategy<FasterDictionaryNode<TKey>>
         where TValueStrategy : struct, IBufferStrategy<TValue>
+        where TBucketStrategy : struct, IBufferStrategy<int>
     {
-        public SveltoDictionary(uint size) : this(size, Allocator.Persistent) { }
+        public SveltoDictionary(uint size) : this(size, Allocator.Persistent)
+        {
+        }
 
         public SveltoDictionary(uint size, Allocator nativeAllocator) : this()
         {
@@ -18,11 +22,10 @@ namespace Svelto.DataStructures
             //constraint needed for the NativeVersion
             _valuesInfo = default;
             _valuesInfo.Alloc(size, nativeAllocator);
-
-            _buckets = new NativeStrategy<int>((uint) HashHelpers.GetPrime((int) size), nativeAllocator);
-
             _values = default;
             _values.Alloc(size, nativeAllocator);
+            _buckets = default;
+            _buckets.Alloc((uint) HashHelpers.GetPrime((int) size), nativeAllocator);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -33,8 +36,9 @@ namespace Svelto.DataStructures
             return _values.ToBuffer();
         }
 
-        //I should put it back to int
-        public uint count => _freeValueCellIndex;
+        public int                           count   => (int) _freeValueCellIndex;
+        public SveltoDictionaryKeyEnumerable keys    => new SveltoDictionaryKeyEnumerable(this);
+        public bool                          isValid => _buckets.isValid;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Add(TKey key, in TValue value)
@@ -44,7 +48,10 @@ namespace Svelto.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Set(TKey key, in TValue value) { AddValue(key, in value, out _); }
+        public void Set(TKey key, in TValue value)
+        {
+            AddValue(key, in value, out _);
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clear()
@@ -72,7 +79,10 @@ namespace Svelto.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool ContainsKey(TKey key) { return TryFindIndex(key, out _); }
+        public bool ContainsKey(TKey key)
+        {
+            return TryFindIndex(key, out _);
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public SveltoDictionaryKeyValueEnumerator GetEnumerator()
@@ -121,7 +131,10 @@ namespace Svelto.DataStructures
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref TValue GetDirectValueByRef(uint index) { return ref _values[index]; }
+        public ref TValue GetDirectValueByRef(uint index)
+        {
+            return ref _values[index];
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref TValue GetValueByRef(TKey key)
@@ -208,13 +221,12 @@ namespace Svelto.DataStructures
             indexSet = _freeValueCellIndex;
             _freeValueCellIndex++;
 
-            //too many collisions?asd
+            //too many collisions?
             if (_collisions > _buckets.capacity)
             {
                 //we need more space and less collisions
                 _buckets.Dispose();
-                _buckets = new NativeStrategy<int>((uint) HashHelpers.ExpandPrime((int) _collisions)
-                                                 , _buckets.allocationStrategy);
+                _buckets.Alloc((uint) HashHelpers.ExpandPrime((int) _collisions), _buckets.allocationStrategy);
                 _collisions = 0;
 
                 //we need to get all the hash code of all the values stored so far and spread them over the new bucket
@@ -276,8 +288,10 @@ namespace Svelto.DataStructures
                     //if the key is found and the bucket points directly to the node to remove
                     if (_buckets[bucketIndex] - 1 == indexToValueToRemove)
                     {
-                        DBC.Common.Check.Require(fasterDictionaryNode.next == -1
-                                               , "if the bucket points to the cell, next MUST NOT exists");
+#if DEBUG && !PROFILE_SVELTO
+                            if (fasterDictionaryNode.next != -1)	
+                                throw new PreconditionException("if the bucket points to the cell, next MUST NOT exists");
+#endif
                         //the bucket will point to the previous cell. if a previous cell exists
                         //its next pointer must be updated!
                         //<--- iteration order  
@@ -288,9 +302,14 @@ namespace Svelto.DataStructures
                         //--> insert order
                         _buckets[bucketIndex] = fasterDictionaryNode.previous + 1;
                     }
+#if DEBUG && !PROFILE_SVELTO                
                     else
-                        DBC.Common.Check.Require(fasterDictionaryNode.next != -1
-                                               , "if the bucket points to another cell, next MUST exists");
+                    {
+                        if (fasterDictionaryNode.next == -1)
+                            throw new PreconditionException("if the bucket points to another cell, next MUST exists");
+                        
+                    }
+#endif
 
                     UpdateLinkedList(indexToValueToRemove, ref _valuesInfo);
 
@@ -354,7 +373,6 @@ namespace Svelto.DataStructures
         //I store all the index with an offset + 1, so that in the bucket list 0 means actually not existing.
         //When read the offset must be offset by -1 again to be the real one. In this way
         //I avoid to initialize the array to -1
-
         public bool TryFindIndex(TKey key, out uint findIndex)
         {
             int  hash        = key.GetHashCode();
@@ -390,14 +408,6 @@ namespace Svelto.DataStructures
             throw new SveltoDictionaryException("Key not found");
         }
 
-        // public NativeFasterDictionary<TK, TV> ToNative<TK, TV>() where TK : unmanaged, TKey, IEquatable<TK> 
-        //                                                          where TV : unmanaged, TValue
-        // {
-        //     return new NativeFasterDictionary<TK, TV>(_buckets.ToNativeArray(), (uint) _buckets.capacity
-        //                                             , _values.ToNativeArray(), _valuesInfo.ToNativeArray()
-        //                                             , _freeValueCellIndex, (uint) _values.capacity);
-        // }
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static uint Reduce(uint x, uint N)
         {
@@ -422,7 +432,7 @@ namespace Svelto.DataStructures
         public ref struct SveltoDictionaryKeyValueEnumerator
         {
             public SveltoDictionaryKeyValueEnumerator
-                (SveltoDictionary<TKey, TValue, TKeyStrategy, TValueStrategy> dic) : this()
+                (SveltoDictionary<TKey, TValue, TKeyStrategy, TValueStrategy, TBucketStrategy> dic) : this()
             {
                 _dic   = dic;
                 _index = -1;
@@ -448,8 +458,55 @@ namespace Svelto.DataStructures
             public KeyValuePairFast Current =>
                 new KeyValuePairFast(_dic._valuesInfo[_index].key, _dic._values, _index);
 
-            readonly SveltoDictionary<TKey, TValue, TKeyStrategy, TValueStrategy> _dic;
-            readonly int                                                          _count;
+            readonly SveltoDictionary<TKey, TValue, TKeyStrategy, TValueStrategy, TBucketStrategy> _dic;
+            readonly int                                                                           _count;
+
+            int _index;
+        }
+
+        public struct SveltoDictionaryKeyEnumerable
+        {
+            SveltoDictionary<TKey, TValue, TKeyStrategy, TValueStrategy, TBucketStrategy> _dic;
+
+            public SveltoDictionaryKeyEnumerable(
+                SveltoDictionary<TKey, TValue, TKeyStrategy, TValueStrategy, TBucketStrategy> dic)
+            {
+                _dic = dic;
+            }
+
+            public SveltoDictionaryKeyEnumerator GetEnumerator() => new SveltoDictionaryKeyEnumerator(_dic);
+        }
+
+        public ref struct SveltoDictionaryKeyEnumerator
+        {
+            public SveltoDictionaryKeyEnumerator
+                (SveltoDictionary<TKey, TValue, TKeyStrategy, TValueStrategy, TBucketStrategy> dic) : this()
+            {
+                _dic   = dic;
+                _index = -1;
+                _count = (int) dic.count;
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public bool MoveNext()
+            {
+#if DEBUG && !PROFILE_SVELTO
+                if (_count != _dic.count)
+                    throw new SveltoDictionaryException("can't modify a dictionary during its iteration");
+#endif
+                if (_index < _count - 1)
+                {
+                    ++_index;
+                    return true;
+                }
+
+                return false;
+            }
+
+            public TKey Current => _dic._valuesInfo[_index].key;
+
+            readonly SveltoDictionary<TKey, TValue, TKeyStrategy, TValueStrategy, TBucketStrategy> _dic;
+            readonly int                                                                           _count;
 
             int _index;
         }
@@ -460,8 +517,8 @@ namespace Svelto.DataStructures
         public readonly ref struct KeyValuePairFast
         {
             readonly TValueStrategy _dicValues;
-            readonly TKey            _key;
-            readonly int             _index;
+            readonly TKey           _key;
+            readonly int            _index;
 
             public KeyValuePairFast(TKey keys, TValueStrategy dicValues, int index)
             {
@@ -483,8 +540,9 @@ namespace Svelto.DataStructures
             _buckets.Dispose();
         }
 
-        TKeyStrategy            _valuesInfo;
-        NativeStrategy<int>     _buckets;
+        TKeyStrategy    _valuesInfo;
+        TBucketStrategy _buckets;
+
         uint                    _freeValueCellIndex;
         uint                    _collisions;
         internal TValueStrategy _values;
@@ -492,6 +550,8 @@ namespace Svelto.DataStructures
 
     public class SveltoDictionaryException : Exception
     {
-        public SveltoDictionaryException(string keyAlreadyExisting) : base(keyAlreadyExisting) { }
+        public SveltoDictionaryException(string keyAlreadyExisting) : base(keyAlreadyExisting)
+        {
+        }
     }
 }

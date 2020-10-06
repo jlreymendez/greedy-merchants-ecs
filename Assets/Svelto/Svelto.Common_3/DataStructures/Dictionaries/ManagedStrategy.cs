@@ -14,6 +14,8 @@ namespace Svelto.DataStructures
             Alloc(size, Allocator.None);
         }
 
+        public bool isValid => _buffer != null;
+
         public void Alloc(uint size, Allocator nativeAllocator)
         {
             MB<T> b = new MB<T>();
@@ -59,6 +61,13 @@ namespace Svelto.DataStructures
             return _buffer;
         }
 
-        public void Dispose() {  }
+        public Allocator allocationStrategy => Allocator.Managed;
+
+        public void       Dispose() {  }
+
+        public MB<T> ToRealBuffer()
+        {
+            return _realBuffer;
+        }
     }
 }

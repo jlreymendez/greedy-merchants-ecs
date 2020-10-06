@@ -26,6 +26,7 @@ namespace Svelto.Utilities
                     SystemLog(txt);
                     break;
                 case LogType.Error:
+                case LogType.LogDebug:
                 case LogType.Exception:
                     SystemLog(txt.FastConcat("</color> ", Environment.NewLine, stack)
                         .FastConcat(Environment.NewLine, dataString));
